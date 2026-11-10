@@ -98,8 +98,13 @@ function evaluateSingleAssertion(
     }
 
     case 'TOOLTIP_VISITED_POINT_WCS': {
-      const { targetWcs, toleranceMm, requireCuttingMotion, requiredWorkOffset } =
-        assertion;
+      const {
+        targetWcs,
+        toleranceMm,
+        requireCuttingMotion,
+        requiredWorkOffset,
+        checkRotaryAxes,
+      } = assertion;
 
       let bestDist = Number.POSITIVE_INFINITY;
       for (const seg of interp.segments) {
@@ -111,6 +116,15 @@ function evaluateSingleAssertion(
             (s) => s.lineNumber === seg.lineNumber
           );
           if (snap && snap.modalStateAfter.workOffset !== requiredWorkOffset) {
+            continue;
+          }
+        }
+        if (checkRotaryAxes) {
+          const angleDiffEnd = Math.hypot(
+            seg.endWcs.a - targetWcs.a,
+            seg.endWcs.c - targetWcs.c
+          );
+          if (angleDiffEnd > 1.0) {
             continue;
           }
         }

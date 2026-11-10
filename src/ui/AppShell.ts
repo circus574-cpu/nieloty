@@ -38,6 +38,7 @@ import { GlossaryModal } from './GlossaryModal';
 import { LessonPanel } from './LessonPanel';
 import { ModalStateBar } from './ModalStateBar';
 import { ToolAndOffsetPanel } from './ToolAndOffsetModal';
+import { WelcomeGuideModal } from './WelcomeGuideModal';
 
 const ALL_LESSONS: LessonDefinition[] = [
   ...MODULE_0_LESSONS,
@@ -59,6 +60,7 @@ export class AppShell {
   private toolAndOffsetPanel!: ToolAndOffsetPanel;
   private lessonPanel!: LessonPanel;
   private glossaryModal!: GlossaryModal;
+  private welcomeModal!: WelcomeGuideModal;
 
   private lastInterpResult!: InterpreterResult;
   private lastMaterialResult!: MaterialAnalysisResult;
@@ -75,7 +77,7 @@ export class AppShell {
 
   constructor(root: HTMLElement) {
     this.root = root;
-    this.progressStore = new SafeProgressStore('M0_A');
+    this.progressStore = new SafeProgressStore('M0_0');
     const savedId = this.progressStore.getCurrentLessonId();
     this.currentLesson =
       ALL_LESSONS.find((l) => l.id === savedId) ?? ALL_LESSONS[0]!;
@@ -136,6 +138,10 @@ export class AppShell {
           <span id="course-progress-badge" class="status-pill pill-ok" title="Twój postęp w kursie">
             Postęp: 0/${ALL_LESSONS.length}
           </span>
+
+          <button type="button" id="btn-header-welcome" class="btn btn-primary" title="Otwórz ekran startowy i przewodnik po aplikacji">
+            👋 Przewodnik / Start
+          </button>
 
           <button type="button" id="btn-header-glossary" class="btn" title="Otwórz słownik pojęć CNC">
             📖 Słownik
@@ -243,8 +249,10 @@ export class AppShell {
             </button>
           </div>
 
-          <!-- Karta 1: Treść lekcji + Zintegrowany Edytor G-code (dla Modułu 1) -->
+          <!-- Karta 1: Treść lekcji NA GÓRZE + Zintegrowany Edytor G-code (dla Modułu 1) -->
           <div id="tab-lesson" class="tab-pane active" role="tabpanel">
+            <div id="lesson-panel-host" class="lesson-panel-host"></div>
+
             <div id="editor-block-wrapper" class="editor-block-wrapper">
               <div class="editor-toolbar">
                 <span id="editor-status-badge" class="editor-status status-ok">
@@ -256,8 +264,6 @@ export class AppShell {
               </div>
               <div id="codemirror-host" class="codemirror-host"></div>
             </div>
-
-            <div id="lesson-panel-host" class="lesson-panel-host"></div>
           </div>
 
           <!-- Karta 2: Lista błędów i ostrzeżeń po polsku -->
@@ -357,6 +363,10 @@ export class AppShell {
     )!;
 
     this.glossaryModal = new GlossaryModal(this.root);
+    this.welcomeModal = new WelcomeGuideModal(this.root, {
+      onStartFromLesson00: () => this.loadLesson('M0_0'),
+      onContinueCurrentLesson: () => {},
+    });
     this.sceneManager = new SceneManager(viewportEl);
     this.player = new SimulationPlayer(this.machineConfig, this.stock);
     this.modalStateBar = new ModalStateBar(modalBarEl);
@@ -400,7 +410,14 @@ export class AppShell {
         const res = this.evaluateCurrentLessonTask(this.currentLesson);
         this.lessonPanel.showGradeResult(res);
       },
+      onRunDemo3D: (demoGCode) => {
+        this.editor.setValue(demoGCode);
+        this.runSimulationFromEditor(false);
+        this.player.reset();
+        this.player.play();
+      },
       onOpenGlossary: () => this.glossaryModal.open(),
+      onOpenWelcomeGuide: () => this.welcomeModal.open(),
       onNavigateLesson: (dir) => this.navigateLesson(dir),
       onProgressUpdated: () => this.refreshLessonSelectorAndProgress(),
     });
@@ -460,7 +477,7 @@ export class AppShell {
     }).join('');
 
     this.lessonSelectEl.innerHTML = `
-      <optgroup label="Moduł 0: Podstawy bez kodu G (A–E)">
+      <optgroup label="Moduł 0: Wprowadzenie od zera (Lekcje 0.0 – 0.E)">
         ${m0Options}
       </optgroup>
       <optgroup label="Moduł 1: Frezarka 3-osiowa CNC (Lekcje 1–14)">
@@ -526,6 +543,10 @@ export class AppShell {
     this.lessonSelectEl.addEventListener('change', () => {
       this.loadLesson(this.lessonSelectEl.value);
     });
+
+    this.root
+      .querySelector('#btn-header-welcome')
+      ?.addEventListener('click', () => this.welcomeModal.open());
 
     this.root
       .querySelector('#btn-header-glossary')

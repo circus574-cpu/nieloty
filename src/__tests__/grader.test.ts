@@ -132,8 +132,10 @@ describe('SafeProgressStore oraz kompletność struktury kursu (Moduł 0, Słown
     expect(store.getCompletedLessonsCount(['M0_A', 'M1_01', 'M1_02'])).toBe(1);
   });
 
-  it('Posiada kompletny Moduł 0 (5 lekcji A-E), Moduł 1 (14 lekcji), Słowniczek oraz Sylabus M2-M4 (3 moduły)', () => {
-    expect(MODULE_0_LESSONS.length).toBe(5);
+  it('Posiada kompletny Moduł 0 (7 lekcji: 0.0, 0.1 oraz A-E), Moduł 1 (14 lekcji), Słowniczek oraz Sylabus M2-M4 (3 moduły)', () => {
+    expect(MODULE_0_LESSONS.length).toBe(7);
+    expect(MODULE_0_LESSONS[0]?.id).toBe('M0_0');
+    expect(MODULE_0_LESSONS[1]?.id).toBe('M0_1');
     expect(MODULE_1_LESSONS.length).toBe(14);
     expect(CNC_GLOSSARY.length).toBeGreaterThanOrEqual(12);
     expect(SYLLABUS_MODULES_2_TO_4.length).toBe(3);

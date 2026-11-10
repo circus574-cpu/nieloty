@@ -1,7 +1,9 @@
 /**
  * Panel pojedynczej lekcji (LessonPanel):
- * - Wyświetla teorię lekcji, interaktywny widżet Modułu 0 (dla lekcji A–E) lub zadanie G-code (dla Modułu 1),
- * - Obsługuje automatyczne sprawdzanie zadania po wyniku symulacji (TaskGradeResult),
+ * - Wyświetla bogatą teorię lekcji, tabelę ściągawki pojęć (cheatSheetRows),
+ *   rozbiór kodu znak po znaku (anatomyBreakdown), przyciski pokazu 3D (interactiveDemos3D),
+ *   ostrzeżenia warsztatowe (commonMistakeWarningPl) oraz instrukcję krok po kroku (stepByStepGuidePl),
+ * - Obsługuje interaktywny widżet Modułu 0 (dla lekcji 0.0–0.E) lub zadanie G-code (dla Modułu 1+),
  * - Udostępnia 3-stopniowe podpowiedzi oraz odblokowuje pełne rozwiązanie dopiero po odkryciu 3 podpowiedzi,
  * - Zawiera interaktywny mini-quiz sprawdzający zrozumienie tematu.
  */
@@ -17,7 +19,9 @@ export interface LessonPanelCallbacks {
   onCheckTaskRequested: (lesson: LessonDefinition) => TaskGradeResult;
   onResetStarterCode: (starterCode: string) => void;
   onApplySolutionCode: (solutionCode: string) => void;
+  onRunDemo3D: (demoGCode: string) => void;
   onOpenGlossary: () => void;
+  onOpenWelcomeGuide: () => void;
   onNavigateLesson: (direction: 'prev' | 'next') => void;
   onProgressUpdated: () => void;
 }
@@ -62,8 +66,128 @@ export class LessonPanel {
     const isModule0 = lesson.moduleId === 'MODULE_0';
 
     const theoryHtml = lesson.theoryParagraphsPl
-      .map((p) => `<p class="lesson-paragraph">${p.replace(/\n/g, '<br/>')}</p>`)
+      .map((p) => {
+        const lines = p.split('\n');
+        if (lines.length > 1 && /^\d+\./.test(lines[0]!.trim())) {
+          const heading = lines[0]!;
+          const body = lines.slice(1).join('<br/>');
+          return `<div class="lesson-section-block">
+            <h4 class="lesson-section-heading">${heading}</h4>
+            <p class="lesson-paragraph">${body}</p>
+          </div>`;
+        }
+        return `<p class="lesson-paragraph">${p.replace(/\n/g, '<br/>')}</p>`;
+      })
       .join('');
+
+    // Tabela ściągawki pojęć i poleceń
+    const cheatSheetHtml =
+      lesson.cheatSheetRows && lesson.cheatSheetRows.length > 0
+        ? `
+        <div class="lesson-cheatsheet-card">
+          <h4>📖 Ściągawka pojęć i symboli z tej lekcji</h4>
+          <div class="table-scroll">
+            <table class="cnc-table">
+              <thead>
+                <tr>
+                  <th>Pojęcie / Kod</th>
+                  <th>Co oznacza prostym językiem?</th>
+                  <th>Przykład w praktyce</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${lesson.cheatSheetRows
+                  .map(
+                    (row) => `
+                  <tr>
+                    <td><code><strong>${row.codeOrSymbol}</strong></code></td>
+                    <td>${row.meaningPl}</td>
+                    <td><span class="table-hint">${row.examplePl}</span></td>
+                  </tr>
+                `
+                  )
+                  .join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `
+        : '';
+
+    // Rozbiór pojedynczej linijki kodu na części pierwsze
+    const anatomyHtml = lesson.anatomyBreakdown
+      ? `
+        <div class="lesson-anatomy-card">
+          <h4>🔬 ${
+            lesson.anatomyBreakdown.titlePl ??
+            'Rozbiór linijki kodu CNC na części pierwsze:'
+          }</h4>
+          <pre class="solution-code-pre"><code>${
+            lesson.anatomyBreakdown.lineCode
+          }</code></pre>
+          <div class="anatomy-parts-grid">
+            ${lesson.anatomyBreakdown.parts
+              .map(
+                (part) => `
+              <div class="anatomy-part-item">
+                <span class="anatomy-token">${part.token}</span>
+                <span class="anatomy-desc">${part.explanationPl}</span>
+              </div>
+            `
+              )
+              .join('')}
+          </div>
+        </div>
+      `
+      : '';
+
+    // Przyciski pokazu na żywo na maszynie 3D
+    const demosHtml =
+      lesson.interactiveDemos3D && lesson.interactiveDemos3D.length > 0
+        ? `
+        <div class="lesson-demo3d-card">
+          ${lesson.interactiveDemos3D
+            .map(
+              (demo, idx) => `
+            <div class="demo3d-item">
+              <button type="button" class="btn btn-primary btn-demo-3d" data-demo-idx="${idx}">
+                ${demo.labelPl}
+              </button>
+              ${
+                demo.descriptionPl
+                  ? `<p class="table-hint">${demo.descriptionPl}</p>`
+                  : ''
+              }
+            </div>
+          `
+            )
+            .join('')}
+        </div>
+      `
+        : '';
+
+    // Ostrzeżenie przed typowym błędem
+    const warningHtml = lesson.commonMistakeWarningPl
+      ? `
+        <div class="lesson-warning-box">
+          <strong>⚠️ Uwaga warsztatowa (Typowy błąd początkującego):</strong>
+          <p>${lesson.commonMistakeWarningPl}</p>
+        </div>
+      `
+      : '';
+
+    // Instrukcja wykonania zadania krok po kroku
+    const stepsHtml =
+      lesson.stepByStepGuidePl && lesson.stepByStepGuidePl.length > 0
+        ? `
+        <div class="lesson-steps-box">
+          <h5>👣 Krok po kroku – jak wykonać to ćwiczenie:</h5>
+          <ol class="lesson-steps-list">
+            ${lesson.stepByStepGuidePl.map((s) => `<li>${s}</li>`).join('')}
+          </ol>
+        </div>
+      `
+        : '';
 
     // Renderowanie podpowiedzi (1..3)
     const unlockedHints = lesson.hintsPl.slice(0, rec.unlockedHintsCount);
@@ -77,7 +201,7 @@ export class LessonPanel {
     const canUnlockMoreHints = rec.unlockedHintsCount < 3;
     const canRevealSolution = rec.unlockedHintsCount >= 3;
 
-    // Sekcja wyniku sprawdzacza zadań (dla Modułu 1)
+    // Sekcja wyniku sprawdzacza zadań (dla Modułu 1+)
     let gradeHtml = '';
     if (this.lastGradeResult) {
       const checksList = this.lastGradeResult.checks
@@ -132,7 +256,11 @@ export class LessonPanel {
         <div class="lesson-top-bar">
           <div>
             <span class="lesson-module-badge">
-              ${isModule0 ? 'MODUŁ 0 • PODSTAWY BEZ KODU G' : 'MODUŁ 1 • FREZARKA 3-OSIOWA'}
+              ${
+                isModule0
+                  ? 'MODUŁ 0 • WPROWADZENIE OD ZERA (BEZ KODU G)'
+                  : 'MODUŁ 1 • FREZARKA 3-OSIOWA CNC'
+              }
             </span>
             <h2 class="lesson-title">${lesson.titlePl}</h2>
             <p class="lesson-subtitle">${lesson.shortSubtitlePl}</p>
@@ -141,8 +269,15 @@ export class LessonPanel {
             <span class="status-pill ${
               rec.taskCompleted ? 'pill-ok' : 'pill-warn'
             }">
-              ${rec.taskCompleted ? '✔ Zadanie zaliczone' : '⏳ Zadanie do wykonania'}
+              ${
+                rec.taskCompleted
+                  ? '✔ Zadanie zaliczone'
+                  : '⏳ Zadanie do wykonania'
+              }
             </span>
+            <button type="button" id="btn-open-welcome-inline" class="btn btn-secondary" title="Pokaż ekran startowy i przewodnik">
+              👋 Jak korzystać
+            </button>
             <button type="button" id="btn-open-glossary" class="btn btn-secondary">
               📖 Słownik pojęć
             </button>
@@ -153,6 +288,11 @@ export class LessonPanel {
           ${theoryHtml}
         </div>
 
+        ${cheatSheetHtml}
+        ${anatomyHtml}
+        ${demosHtml}
+        ${warningHtml}
+
         <!-- Host dla interaktywnych widżetów Modułu 0 -->
         <div id="m0-widget-host" ${isModule0 ? '' : 'hidden'}></div>
 
@@ -160,13 +300,14 @@ export class LessonPanel {
         <div class="lesson-task-card">
           <h4>🎯 Zadanie praktyczne</h4>
           <p class="lesson-task-desc">${lesson.taskDescriptionPl}</p>
+          ${stepsHtml}
 
           ${
             !isModule0
               ? `
             <div class="task-action-buttons">
               <button type="button" id="btn-grade-task" class="btn btn-accent">
-                ✔ Sprawdź zadanie (oceń wynik symulacji)
+                ✔ Sprawdź zadanie (oceń wynik symulacji 3D)
               </button>
               <button type="button" id="btn-reset-starter" class="btn">
                 🔄 Przywróć kod startowy lekcji
@@ -251,10 +392,27 @@ export class LessonPanel {
       });
     }
 
+    // Obsługa przycisków demonstracji 3D
+    const demoBtns =
+      this.container.querySelectorAll<HTMLButtonElement>('button.btn-demo-3d');
+    demoBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.demoIdx);
+        const demo = lesson.interactiveDemos3D?.[idx];
+        if (demo) {
+          this.callbacks.onRunDemo3D(demo.gcode);
+        }
+      });
+    });
+
     // Zdarzenia przycisków
     this.container
       .querySelector('#btn-open-glossary')
       ?.addEventListener('click', () => this.callbacks.onOpenGlossary());
+
+    this.container
+      .querySelector('#btn-open-welcome-inline')
+      ?.addEventListener('click', () => this.callbacks.onOpenWelcomeGuide());
 
     this.container
       .querySelector('#btn-grade-task')

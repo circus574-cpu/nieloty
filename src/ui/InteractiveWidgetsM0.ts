@@ -13,6 +13,12 @@ export function renderModule0Widget(
   onTaskPassed: () => void
 ): void {
   switch (lessonId) {
+    case 'M0_0':
+      renderWelcomeCncWidget(container, onTaskPassed);
+      break;
+    case 'M0_1':
+      renderBasicConceptsWidget(container, onTaskPassed);
+      break;
     case 'M0_A':
       renderTechnicalDrawingWidget(container, onTaskPassed);
       break;
@@ -31,6 +37,197 @@ export function renderModule0Widget(
     default:
       container.innerHTML = '';
   }
+}
+
+function renderWelcomeCncWidget(
+  container: HTMLElement,
+  onTaskPassed: () => void
+): void {
+  container.innerHTML = `
+    <div class="m0-widget-card">
+      <h4>👋 Ćwiczenie powitalne: Frezarka a Tokarka i droga od rysunku do części</h4>
+      <div class="m0-svg-box">
+        <svg viewBox="0 0 560 155" class="tech-drawing-svg" role="img" aria-label="Porównanie frezarki i tokarki oraz 4 kroków powstawania części">
+          <!-- Frezarka -->
+          <rect x="12" y="12" width="255" height="130" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="1.8" />
+          <text x="24" y="34" fill="#38bdf8" font-size="13" font-weight="bold">1. FREZARKA CNC (Kostki i płyty)</text>
+          <!-- Wrzeciono i frez -->
+          <rect x="122" y="42" width="34" height="28" fill="#64748b" />
+          <rect x="133" y="70" width="12" height="26" fill="#fbbf24" />
+          <text x="154" y="65" fill="#fbbf24" font-size="11">↻ Kręci się FREZ</text>
+          <!-- Kostka w imadle -->
+          <rect x="90" y="96" width="100" height="26" fill="#2563eb" stroke="#93c5fd" stroke-width="1.5" />
+          <text x="32" y="135" fill="#cbd5e1" font-size="11">Kostka stoi NIERUCHOMO w imadle</text>
+
+          <!-- Tokarka -->
+          <rect x="290" y="12" width="258" height="130" rx="8" fill="#0f172a" stroke="#4ade80" stroke-width="1.8" />
+          <text x="302" y="34" fill="#4ade80" font-size="13" font-weight="bold">2. TOKARKA CNC (Okrągłe wałki)</text>
+          <!-- Uchwyt i wałek -->
+          <rect x="305" y="56" width="26" height="48" fill="#64748b" />
+          <rect x="331" y="66" width="110" height="28" rx="4" fill="#2563eb" stroke="#93c5fd" stroke-width="1.5" />
+          <text x="342" y="58" fill="#4ade80" font-size="11">↻ Kręci się WAŁEK</text>
+          <!-- Nóż tokarski -->
+          <polygon points="442,94 468,85 468,112 442,112" fill="#fbbf24" />
+          <text x="305" y="135" fill="#cbd5e1" font-size="11">Nóż stoi NIERUCHOMO i zbiera metal</text>
+        </svg>
+      </div>
+
+      <div class="m0-form-grid">
+        <label class="m0-field">
+          <span>1. Na FREZARCE szybko obraca się:</span>
+          <select id="m00-q1" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="tool">Narzędzie (frez / wiertło), a kostka stoi nieruchomo w imadle</option>
+            <option value="table">Cała hala produkcyjna</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>2. Na TOKARCE szybko obraca się:</span>
+          <select id="m00-q2" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="part">Obrabiany przedmiot (okrągły wałek), a nóż tokarski się nie kręci</option>
+            <option value="none">Nic się nie obraca</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>3. Jaka jest prawidłowa droga od pomysłu do gotowej części?</span>
+          <select id="m00-q3" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="order">1. Rysunek z wymiarami → 2. Program ruchów → 3. Wycięcie w maszynie → 4. Pomiar suwmiarką</option>
+            <option value="wrong">Najpierw wycinamy na ślepo, a potem zgadujemy co wyszło</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="m0-actions-row">
+        <button type="button" id="btn-check-m00" class="btn btn-accent">
+          ✔ Sprawdź ćwiczenie powitalne
+        </button>
+        <span id="m00-feedback" class="m0-feedback"></span>
+      </div>
+    </div>
+  `;
+
+  container.querySelector('#btn-check-m00')?.addEventListener('click', () => {
+    const q1 = container.querySelector<HTMLSelectElement>('#m00-q1')?.value;
+    const q2 = container.querySelector<HTMLSelectElement>('#m00-q2')?.value;
+    const q3 = container.querySelector<HTMLSelectElement>('#m00-q3')?.value;
+    const fb = container.querySelector<HTMLElement>('#m00-feedback')!;
+
+    if (q1 === 'tool' && q2 === 'part' && q3 === 'order') {
+      fb.textContent =
+        '🎉 Brawo! Znasz już różnicę między frezarką a tokarką oraz 4 kroki powstawania części!';
+      fb.className = 'm0-feedback check-pass';
+      onTaskPassed();
+    } else {
+      fb.textContent =
+        '✖ Sprawdź jeszcze raz: na frezarce kręci się narzędzie, na tokarce kręci się wałek, a pracę zaczynamy od rysunku.';
+      fb.className = 'm0-feedback check-fail';
+    }
+  });
+}
+
+function renderBasicConceptsWidget(
+  container: HTMLElement,
+  onTaskPassed: () => void
+): void {
+  container.innerHTML = `
+    <div class="m0-widget-card">
+      <h4>🧭 Wizualna mapa 4 podstawowych pojęć: Wrzeciono, Narzędzie, Oś i Współrzędna</h4>
+      <div class="m0-svg-box">
+        <svg viewBox="0 0 560 190" class="tech-drawing-svg" role="img" aria-label="Schemat wrzeciona, narzędzia, osi X Y Z i współrzędnych na kostce">
+          <!-- Kostka 100x80 -->
+          <rect x="60" y="55" width="200" height="110" fill="#1e293b" stroke="#93c5fd" stroke-width="2" />
+          <!-- Punkt zerowy (0,0,0) -->
+          <circle cx="60" cy="165" r="6" fill="#fbbf24" />
+          <text x="15" y="182" fill="#fbbf24" font-size="12" font-weight="bold">Zero (0,0,0)</text>
+
+          <!-- Osie X i Y -->
+          <line x1="60" y1="165" x2="170" y2="165" stroke="#ef4444" stroke-width="3" />
+          <text x="175" y="170" fill="#ef4444" font-size="12" font-weight="bold">Oś X+ (w prawo)</text>
+          <line x1="60" y1="165" x2="60" y2="75" stroke="#22c55e" stroke-width="3" />
+          <text x="68" y="72" fill="#22c55e" font-size="12" font-weight="bold">Oś Y+ (w głąb)</text>
+
+          <!-- Punkt środkowy X=50, Y=40 -->
+          <circle cx="160" cy="110" r="5" fill="#38bdf8" />
+          <text x="115" y="128" fill="#38bdf8" font-size="12" font-weight="bold">Środek: X=50, Y=40</text>
+
+          <!-- Widok z boku: Wrzeciono, Narzędzie i Oś Z -->
+          <rect x="370" y="16" width="54" height="42" rx="4" fill="#64748b" stroke="#cbd5e1" />
+          <text x="432" y="38" fill="#f8fafc" font-size="12" font-weight="bold">1. WRZECIONO (silnik)</text>
+          <rect x="389" y="58" width="16" height="38" fill="#fbbf24" />
+          <text x="432" y="80" fill="#fbbf24" font-size="12" font-weight="bold">2. NARZĘDZIE (frez)</text>
+
+          <!-- Oś Z -->
+          <line x1="345" y1="115" x2="345" y2="35" stroke="#60a5fa" stroke-width="3" />
+          <text x="285" y="45" fill="#60a5fa" font-size="12" font-weight="bold">Oś Z+ (góra)</text>
+          <text x="285" y="112" fill="#f87171" font-size="12" font-weight="bold">Oś Z- (dół)</text>
+
+          <!-- Kostka z boku (Z=0 na górze) -->
+          <rect x="335" y="122" width="140" height="44" fill="#1e293b" stroke="#93c5fd" stroke-width="2" />
+          <text x="342" y="140" fill="#4ade80" font-size="11" font-weight="bold">Góra kostki: Z = 0</text>
+          <text x="342" y="158" fill="#f87171" font-size="11">Wewnątrz metalu: Z ujemne (np. Z-4)</text>
+        </svg>
+      </div>
+
+      <div class="m0-form-grid">
+        <label class="m0-field">
+          <span>1. Co to jest WRZECIONO, a co to jest NARZĘDZIE?</span>
+          <select id="m01-q1" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="ok">Wrzeciono to silnik obracający, a Narzędzie to ostry frez lub wiertło włożone do wrzeciona</option>
+            <option value="bad">To dwie nazwy na szafkę ubraniową</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>2. Która OŚ odpowiada za ruch pionowy (góra / dół)?</span>
+          <select id="m01-q2" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="x">Oś X (lewo / prawo)</option>
+            <option value="y">Oś Y (przód / tył)</option>
+            <option value="z">Oś Z (Z+ w górę nad detal, Z- w dół w stronę metalu)</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>3. Co oznacza WSPÓŁRZĘDNA Z = 10 mm, a co Z = -4 mm (gdy Z=0 jest na górze kostki)?</span>
+          <select id="m01-q3" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="ok">Z=10 to 10 mm bezpiecznie w powietrzu nad kostką, a Z=-4 to 4 mm zagłębienia wewnątrz metalu</option>
+            <option value="bad">Obie oznaczają to samo</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="m0-actions-row">
+        <button type="button" id="btn-check-m01" class="btn btn-accent">
+          ✔ Sprawdź znajomość 4 pojęć
+        </button>
+        <span id="m01-feedback" class="m0-feedback"></span>
+      </div>
+    </div>
+  `;
+
+  container.querySelector('#btn-check-m01')?.addEventListener('click', () => {
+    const q1 = container.querySelector<HTMLSelectElement>('#m01-q1')?.value;
+    const q2 = container.querySelector<HTMLSelectElement>('#m01-q2')?.value;
+    const q3 = container.querySelector<HTMLSelectElement>('#m01-q3')?.value;
+    const fb = container.querySelector<HTMLElement>('#m01-feedback')!;
+
+    if (q1 === 'ok' && q2 === 'z' && q3 === 'ok') {
+      fb.textContent =
+        '🎉 Doskonale! Rozumiesz już pojęcia: Wrzeciono, Narzędzie, Oś (X, Y, Z) oraz Współrzędna!';
+      fb.className = 'm0-feedback check-pass';
+      onTaskPassed();
+    } else {
+      fb.textContent =
+        '✖ Sprawdź jeszcze raz: Wrzeciono obraca narzędziem, oś Z to ruch pionowy (góra/dół), a Z dodatnie jest nad kostką.';
+      fb.className = 'm0-feedback check-fail';
+    }
+  });
 }
 
 function renderTechnicalDrawingWidget(

@@ -18,7 +18,12 @@ import type {
   WorkpieceStock,
 } from './machine';
 
-export type CourseModuleId = 'MODULE_0' | 'MODULE_1' | 'MODULE_2' | 'MODULE_3' | 'MODULE_4';
+export type CourseModuleId =
+  | 'MODULE_0'
+  | 'MODULE_1'
+  | 'MODULE_2'
+  | 'MODULE_3'
+  | 'MODULE_4';
 
 /** Pojedyncze kryterium sprawdzania zadania na podstawie wyniku symulacji (nie po tekście kodu!) */
 export type TaskAssertion =
@@ -32,6 +37,8 @@ export type TaskAssertion =
       toleranceMm: number;
       requireCuttingMotion: boolean; // true = musi dojechać ruchem roboczym G1/G2/G3, a nie G0
       requiredWorkOffset?: WorkOffsetCode;
+      /** Jeśli true, sprawdza również kąty osi obrotowych A oraz C (dla Modułów 3 i 4) */
+      checkRotaryAxes?: boolean;
       descriptionPl: string;
     }
   | {
@@ -92,6 +99,30 @@ export interface QuizQuestion {
   explanationPl: string;
 }
 
+/** Wiersz w tabeli ściągawki pojęć/poleceń dla początkującego */
+export interface LessonCheatSheetRow {
+  codeOrSymbol: string;
+  meaningPl: string;
+  examplePl: string;
+}
+
+/** Rozbiór pojedynczej linii kodu na części pierwsze (token po tokenie) */
+export interface CodeAnatomyBreakdown {
+  titlePl?: string;
+  lineCode: string;
+  parts: {
+    token: string;
+    explanationPl: string;
+  }[];
+}
+
+/** Przycisk szybkiej demonstracji ruchu na maszynie 3D */
+export interface InteractiveDemo3D {
+  labelPl: string;
+  descriptionPl?: string;
+  gcode: string;
+}
+
 /** Definicja lekcji w kursie */
 export interface LessonDefinition {
   id: string;
@@ -99,8 +130,18 @@ export interface LessonDefinition {
   orderIndex: number;
   titlePl: string;
   shortSubtitlePl: string;
-  /** Treść teoretyczna lekcji w akapitach (z podświetlaniem terminów ze słownika) */
+  /** Treść teoretyczna lekcji w akapitach */
   theoryParagraphsPl: string[];
+  /** Opcjonalna tabela pojęć i poleceń wprowadzanych w tej lekcji ("Ściągawka dla początkującego") */
+  cheatSheetRows?: LessonCheatSheetRow[];
+  /** Opcjonalny wizualny rozbiór przykładowego bloku G-code znak po znaku */
+  anatomyBreakdown?: CodeAnatomyBreakdown;
+  /** Opcjonalne przyciski uruchamiające pokazowy ruch na maszynie 3D jednym kliknięciem */
+  interactiveDemos3D?: InteractiveDemo3D[];
+  /** Opcjonalna instrukcja wykonania zadania krok po kroku dla początkującego */
+  stepByStepGuidePl?: string[];
+  /** Opcjonalne ostrzeżenie o typowym błędzie początkującego w warsztacie */
+  commonMistakeWarningPl?: string;
   /** Konfiguracja maszyny i surówki dla danej lekcji (dla Modułów 1-4) */
   machineConfig?: MachineConfig;
   stock?: WorkpieceStock;

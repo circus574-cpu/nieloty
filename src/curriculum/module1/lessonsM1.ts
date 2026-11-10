@@ -27,16 +27,56 @@ export const MODULE_1_LESSONS: LessonDefinition[] = [
     titlePl: 'Lekcja 1.1: Czym jest maszyna CNC i program. Osie X, Y, Z',
     shortSubtitlePl: 'Orientacja osi w przestrzeni 3D i pierwszy ruch nad stołem',
     theoryParagraphsPl: [
-      'Witaj przy swojej pierwszej wirtualnej frezarce 3-osiowej CNC! Maszyna porusza narzędziem w trzech prostopadłych kierunkach nazywanych osiami (Axes): oś X to ruch w lewo (X-) i w prawo (X+), oś Y to ruch do przodu (Y-) i w głąb maszyny (Y+), a oś Z to ruch pionowy w dół (Z-) i w górę (Z+).',
-      'Program CNC (G-code) czytany jest przez maszynę linia po linii (z góry na dół). Każda linia nazywa się blokiem (Block). Tekst w nawiasach okrągłych (np. (Moj komentarz)) to notatka dla człowieka – maszyna całkowicie ją ignoruje.',
-      'Wpisanie w linii słowa G0 (ruch szybki – Rapid Traverse) oraz współrzędnych np. X50 Y40 Z15 każe maszynie przesunąć czubek narzędzia dokładnie nad środek naszej kostki (50 mm w prawo, 40 mm w głąb i 15 mm nad górną powierzchnię). Możesz też poruszać maszyną ręcznie w karcie „🕹 Ręczny ruch (JOG)”.',
+      '1. WITAJ PRZY SWOJEJ PIERWSZEJ FREZARCE 3-OSIOWEJ CNC!\nMaszyna porusza wrzecionem z narzędziem w trzech prostopadłych kierunkach nazywanych osiami (Axes):\n• Oś X (czerwona strzałka) = ruch poziomy w lewo (X-) i w prawo (X+).\n• Oś Y (zielona strzałka) = ruch poziomy do przodu/do Ciebie (Y-) i w głąb maszyny (Y+).\n• Oś Z (niebieska strzałka) = ruch pionowy w dół w stronę metalu (Z-) i w górę w powietrze (Z+).',
+      '2. JAK MASZYNA CZYTA PROGRAM? (BLOKI, SŁOWA I KOMENTARZE)\nProgram CNC (G-code) czytany jest przez maszynę linijka po linijce od góry do dołu. Każda linia nazywa się BLOKIEM (Block). Tekst zapisany w nawiasach okrągłych, np. (Mój komentarz), to notatka dla człowieka – maszyna całkowicie ją pomija.',
+      '3. CO OZNACZAJĄ LINIE PRZYGOTOWAWCZE NA POCZĄTKU PROGRAMU?\nW edytorze na dole tej karty zobaczysz 3 krótkie linie przygotowawcze (tzw. nagłówek bezpieczeństwa), które ustawiają maszynę do pracy: „T1 M6” (załóż do wrzeciona narzędzie nr 1 – frez Ø10 mm), „G21 G90 G17 G54” (pracuj w milimetrach, mierz współrzędne od narożnika kostki G54) oraz „G43 H1 Z20” (uwzględnij długość narzędzia nr 1 i ustaw czubek 20 mm nad kostką). Pod nimi znajduje się właściwy rozkaz ruchu: „G0 X20 Y20 Z10”, czyli szybki przejazd w powietrzu do punktu X=20, Y=20, Z=10.',
     ],
+    cheatSheetRows: [
+      {
+        codeOrSymbol: 'G0',
+        meaningPl: 'Ruch szybki (Rapid Traverse) – szybki dojazd narzędzia w powietrzu nad detalem (żółta linia przerywana)',
+        examplePl: 'G0 X80 Y60 Z10',
+      },
+      {
+        codeOrSymbol: 'X, Y, Z',
+        meaningPl: 'Współrzędne punktu docelowego w milimetrach liczone od lewego dolnego narożnika kostki (0, 0, 0)',
+        examplePl: 'X80 = 80 mm w prawo, Y60 = 60 mm w głąb, Z10 = 10 mm nad kostką',
+      },
+      {
+        codeOrSymbol: 'T1 M6 oraz G43 H1',
+        meaningPl: 'Pobranie narzędzia nr 1 do wrzeciona (T1 M6) i włączenie pomiaru jego długości (G43 H1)',
+        examplePl: 'Stały nagłówek na początku każdego programu',
+      },
+      {
+        codeOrSymbol: 'M30',
+        meaningPl: 'Koniec programu i przewinięcie go na początek',
+        examplePl: 'Zawsze w ostatniej linii programu',
+      },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Rozbiór linii ruchu, którą za chwilę zmodyfikujesz w edytorze:',
+      lineCode: 'G0 X80 Y60 Z10',
+      parts: [
+        { token: 'G0', explanationPl: 'Jedź ruchem szybkim w powietrzu' },
+        { token: 'X80', explanationPl: 'Ustaw narzędzie 80 mm w prawo od lewej krawędzi kostki' },
+        { token: 'Y60', explanationPl: 'Ustaw narzędzie 60 mm w głąb od przedniej krawędzi kostki' },
+        { token: 'Z10', explanationPl: 'Utrzymaj bezpieczną wysokość 10 mm nad górną ścianką kostki' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'Przewiń ten panel nieco niżej do ciemnego edytora kodu G-code.',
+      'Znajdź w linii 9 zapis: G0 X20 Y20 Z10',
+      'Zmień w tej linii X20 na X80 oraz Y20 na Y60 (tak aby powstało: G0 X80 Y60 Z10).',
+      'Kliknij zielony przycisk „✔ Sprawdź zadanie (oceń wynik symulacji 3D)” powyżej edytora!',
+    ],
+    commonMistakeWarningPl:
+      'Pamiętaj, aby pomiędzy literą a liczbą NIE stawiać znaku równości (piszemy X80, a nie X=80!). Poszczególne słowa oddzielamy zwykłą spacją: G0 X80 Y60 Z10.',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: EARLY_LESSON_VALIDATION_POLICY,
     initialActiveToolPocket: 1,
     starterCode: `(Lekcja 1.1: Poznajemy osie X, Y, Z)
-(Naglowek przygotowawczy narzedzia - poznasz go w kolejnych lekcjach)
+(Naglowek przygotowawczy narzedzia - wyjasniony powyzej)
 T1 M6
 G21 G90 G17 G54
 G43 H1 Z20
