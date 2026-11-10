@@ -20,6 +20,8 @@ export interface LessonPanelCallbacks {
   onResetStarterCode: (starterCode: string) => void;
   onApplySolutionCode: (solutionCode: string) => void;
   onRunDemo3D: (demoGCode: string) => void;
+  onPreviewIn3D?: () => void;
+  onMountEditorSlot?: (slotEl: HTMLElement | null) => void;
   onOpenGlossary: () => void;
   onOpenWelcomeGuide: () => void;
   onNavigateLesson: (direction: 'prev' | 'next') => void;
@@ -316,12 +318,16 @@ export class LessonPanel {
           ${
             !isModule0
               ? `
+            <div id="lesson-editor-slot" class="lesson-editor-slot"></div>
             <div class="task-action-buttons">
               <button type="button" id="btn-grade-task" class="btn btn-accent">
-                ✔ Sprawdź zadanie (oceń wynik symulacji 3D)
+                ✔ Sprawdź zadanie (oceń wynik 3D)
+              </button>
+              <button type="button" id="btn-preview-3d-task" class="btn btn-primary">
+                🖥️ Pokaż ruch w 3D
               </button>
               <button type="button" id="btn-reset-starter" class="btn">
-                🔄 Przywróć kod startowy lekcji
+                🔄 Przywróć kod startowy
               </button>
             </div>
             ${gradeHtml}
@@ -398,6 +404,7 @@ export class LessonPanel {
 
     // Jeśli to Moduł 0, wyrenderuj interaktywny widżet warsztatowy
     if (isModule0) {
+      this.callbacks.onMountEditorSlot?.(null);
       const widgetHost =
         this.container.querySelector<HTMLElement>('#m0-widget-host')!;
       renderModule0Widget(lesson.id, widgetHost, () => {
@@ -405,6 +412,10 @@ export class LessonPanel {
         this.callbacks.onProgressUpdated();
         this.render();
       });
+    } else {
+      const editorSlot =
+        this.container.querySelector<HTMLElement>('#lesson-editor-slot');
+      this.callbacks.onMountEditorSlot?.(editorSlot);
     }
 
     // Obsługa przycisków demonstracji 3D
@@ -434,6 +445,12 @@ export class LessonPanel {
       ?.addEventListener('click', () => {
         const res = this.callbacks.onCheckTaskRequested(lesson);
         this.showGradeResult(res);
+      });
+
+    this.container
+      .querySelector('#btn-preview-3d-task')
+      ?.addEventListener('click', () => {
+        this.callbacks.onPreviewIn3D?.();
       });
 
     this.container

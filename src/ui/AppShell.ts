@@ -81,6 +81,9 @@ export class AppShell {
   private scrubInputEl!: HTMLInputElement;
   private timeLabelEl!: HTMLElement;
   private editorBlockWrapperEl!: HTMLElement;
+  private workspaceGridEl!: HTMLElement;
+  private touchOrbitBtnEl!: HTMLButtonElement;
+  private mobileTouchOrbitEnabled = false;
   private jogStepMm = 5;
 
   constructor(root: HTMLElement) {
@@ -152,26 +155,29 @@ export class AppShell {
         </div>
 
         <div class="header-actions">
-          <label class="sample-select-label" for="lesson-select">
-            Wybierz lekcję:
-          </label>
-          <select id="lesson-select" class="sample-select" aria-label="Wybierz lekcję kursu CNC"></select>
+          <div class="lesson-picker-row">
+            <button type="button" id="btn-header-prev-lesson" class="btn btn-icon-nav" title="Poprzednia lekcja" aria-label="Poprzednia lekcja">◀</button>
+            <select id="lesson-select" class="sample-select" aria-label="Wybierz lekcję kursu CNC"></select>
+            <button type="button" id="btn-header-next-lesson" class="btn btn-icon-nav" title="Następna lekcja" aria-label="Następna lekcja">▶</button>
+          </div>
 
-          <span id="course-progress-badge" class="status-pill pill-ok" title="Twój postęp w kursie">
-            Postęp: 0/${ALL_LESSONS.length}
-          </span>
+          <div class="header-quick-buttons">
+            <span id="course-progress-badge" class="status-pill pill-ok" title="Twój postęp w kursie">
+              Postęp: 0/${ALL_LESSONS.length}
+            </span>
 
-          <button type="button" id="btn-header-welcome" class="btn btn-primary" title="Otwórz ekran startowy i przewodnik po aplikacji">
-            👋 Przewodnik / Start
-          </button>
+            <button type="button" id="btn-header-welcome" class="btn btn-primary" title="Otwórz ekran startowy i przewodnik po aplikacji">
+              👋 Start
+            </button>
 
-          <button type="button" id="btn-header-glossary" class="btn" title="Otwórz słownik pojęć CNC">
-            📖 Słownik
-          </button>
+            <button type="button" id="btn-header-glossary" class="btn" title="Otwórz słownik pojęć CNC">
+              📖 Słownik
+            </button>
 
-          <button type="button" id="btn-bhp-info" class="btn btn-secondary" title="Zasady bezpieczeństwa BHP">
-            ⚠ Nota BHP
-          </button>
+            <button type="button" id="btn-bhp-info" class="btn btn-secondary" title="Zasady bezpieczeństwa BHP">
+              ⚠ BHP
+            </button>
+          </div>
         </div>
       </header>
 
@@ -183,11 +189,28 @@ export class AppShell {
         <button type="button" id="btn-close-bhp" class="btn-inline-close" aria-label="Zamknij notę BHP">Zamknij ✕</button>
       </div>
 
-      <main class="workspace-grid">
+      <!-- PRZEŁĄCZNIK TRYBU WIDOKU DLA TELEFONÓW I TABLETÓW (< 980px) -->
+      <nav id="mobile-view-switcher" class="mobile-view-switcher" aria-label="Przełącznik widoku mobilnego">
+        <button type="button" class="mobile-view-btn" data-mobile-view="lesson">
+          📚 Lekcja i Kod
+        </button>
+        <button type="button" class="mobile-view-btn active" data-mobile-view="split">
+          ♊ 2w1: 3D + Kod
+        </button>
+        <button type="button" class="mobile-view-btn" data-mobile-view="sim3d">
+          🖥️ Pełny 3D
+        </button>
+      </nav>
+
+      <main id="workspace-grid" class="workspace-grid mobile-mode-split">
         <!-- PRAWY / GÓRNY PANEL: SCENA 3D + STEROWANIE SYMULACJĄ + STAN MODALNY -->
         <section class="viewport-section" aria-label="Wizualizacja 3D i sterowanie symulacją">
           <div class="viewport-wrapper">
             <div id="three-viewport" class="three-viewport"></div>
+
+            <button type="button" id="btn-toggle-touch-3d" class="btn-touch-3d-toggle" title="Przełącz obracanie 3D palcem lub przewijanie strony">
+              🖐 Dotknij, by obracać 3D
+            </button>
 
             <div class="camera-toolbar" role="toolbar" aria-label="Widoki kamery 3D">
               <button type="button" class="btn-cam" data-cam="TOP_XY" title="Widok z góry (płaszczyzna XY)">Góra (XY)</button>
@@ -415,6 +438,11 @@ export class AppShell {
     this.editorBlockWrapperEl = this.root.querySelector<HTMLElement>(
       '#editor-block-wrapper'
     )!;
+    this.workspaceGridEl =
+      this.root.querySelector<HTMLElement>('#workspace-grid')!;
+    this.touchOrbitBtnEl = this.root.querySelector<HTMLButtonElement>(
+      '#btn-toggle-touch-3d'
+    )!;
 
     this.glossaryModal = new GlossaryModal(this.root);
     this.welcomeModal = new WelcomeGuideModal(this.root, {
@@ -424,6 +452,12 @@ export class AppShell {
     this.sceneManager = new SceneManager(viewportEl);
     this.player = new SimulationPlayer(this.machineConfig, this.stock);
     this.modalStateBar = new ModalStateBar(modalBarEl);
+
+    // Na ekranach mobilnych (< 980px) domyślnie pozwalamy swobodnie przewijać stronę po widoku 3D
+    if (typeof window !== 'undefined' && window.innerWidth < 980) {
+      this.mobileTouchOrbitEnabled = false;
+      this.sceneManager.setTouchOrbitEnabled(false);
+    }
 
     this.editor = new CodeEditor(
       cmHostEl,
@@ -467,8 +501,19 @@ export class AppShell {
       onRunDemo3D: (demoGCode) => {
         this.editor.setValue(demoGCode);
         this.runSimulationFromEditor(false);
-        this.player.reset();
-        this.player.play();
+        this.revealAndPlay3DOnMobile();
+      },
+      onPreviewIn3D: () => {
+        this.runSimulationFromEditor(true);
+        this.revealAndPlay3DOnMobile();
+      },
+      onMountEditorSlot: (slotEl) => {
+        if (slotEl) {
+          slotEl.appendChild(this.editorBlockWrapperEl);
+          this.editorBlockWrapperEl.hidden = false;
+        } else {
+          this.editorBlockWrapperEl.hidden = true;
+        }
       },
       onOpenGlossary: () => this.glossaryModal.open(),
       onOpenWelcomeGuide: () => this.welcomeModal.open(),
@@ -556,6 +601,14 @@ export class AppShell {
     const isModule0 = found.moduleId === 'MODULE_0';
     this.editorBlockWrapperEl.hidden = isModule0;
 
+    // Na ekranach mobilnych dla Modułu 0 (bez kodu G) pokazujemy od razu lekcję na górze,
+    // a dla Modułów 1–4 tryb łączony 2w1 (kompaktowy 3D + lekcja i edytor pod spodem)
+    if (isModule0) {
+      this.setMobileViewMode('lesson');
+    } else if (this.workspaceGridEl.classList.contains('mobile-mode-lesson')) {
+      this.setMobileViewMode('split');
+    }
+
     if (!isModule0) {
       this.machineConfig = structuredClone(
         found.machineConfig ?? MILL_3AXIS_MACHINE
@@ -598,9 +651,80 @@ export class AppShell {
     );
   }
 
+  private setMobileViewMode(mode: 'lesson' | 'split' | 'sim3d'): void {
+    this.workspaceGridEl.classList.remove(
+      'mobile-mode-lesson',
+      'mobile-mode-split',
+      'mobile-mode-sim3d'
+    );
+    this.workspaceGridEl.classList.add(`mobile-mode-${mode}`);
+
+    const btns = this.root.querySelectorAll<HTMLButtonElement>(
+      'button.mobile-view-btn'
+    );
+    btns.forEach((b) => {
+      b.classList.toggle('active', b.dataset.mobileView === mode);
+    });
+
+    if (mode === 'sim3d' && typeof window !== 'undefined' && window.innerWidth < 980) {
+      this.mobileTouchOrbitEnabled = true;
+      this.sceneManager.setTouchOrbitEnabled(true);
+      this.updateTouchOrbitBtnLabel();
+    }
+
+    setTimeout(() => this.sceneManager.forceResize(), 60);
+  }
+
+  private updateTouchOrbitBtnLabel(): void {
+    if (!this.touchOrbitBtnEl) return;
+    if (this.mobileTouchOrbitEnabled) {
+      this.touchOrbitBtnEl.textContent = '🔒 Zablokuj 3D (przewijaj stronę)';
+      this.touchOrbitBtnEl.classList.add('active');
+    } else {
+      this.touchOrbitBtnEl.textContent = '🖐 Dotknij, by obracać 3D';
+      this.touchOrbitBtnEl.classList.remove('active');
+    }
+  }
+
+  private revealAndPlay3DOnMobile(): void {
+    if (this.workspaceGridEl.classList.contains('mobile-mode-lesson')) {
+      this.setMobileViewMode('split');
+    }
+    this.player.reset();
+    this.player.play();
+    if (typeof window !== 'undefined' && window.innerWidth < 980) {
+      const vp = this.root.querySelector<HTMLElement>('.viewport-section');
+      vp?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   private bindUIEvents(): void {
     this.lessonSelectEl.addEventListener('change', () => {
       this.loadLesson(this.lessonSelectEl.value);
+    });
+
+    this.root
+      .querySelector('#btn-header-prev-lesson')
+      ?.addEventListener('click', () => this.navigateLesson('prev'));
+
+    this.root
+      .querySelector('#btn-header-next-lesson')
+      ?.addEventListener('click', () => this.navigateLesson('next'));
+
+    const mobileViewBtns = this.root.querySelectorAll<HTMLButtonElement>(
+      'button.mobile-view-btn'
+    );
+    mobileViewBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.mobileView as 'lesson' | 'split' | 'sim3d';
+        this.setMobileViewMode(mode);
+      });
+    });
+
+    this.touchOrbitBtnEl.addEventListener('click', () => {
+      this.mobileTouchOrbitEnabled = !this.mobileTouchOrbitEnabled;
+      this.sceneManager.setTouchOrbitEnabled(this.mobileTouchOrbitEnabled);
+      this.updateTouchOrbitBtnLabel();
     });
 
     this.root

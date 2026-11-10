@@ -182,6 +182,21 @@ export class SceneManager {
     this.scene.add(fillLight);
   }
 
+  public forceResize(): void {
+    this.handleResize();
+  }
+
+  /**
+   * Pozwala na telefonach przełączać między obracaniem kamery 3D palcem
+   * a swobodnym przewijaniem strony w pionie (touch-action: pan-y).
+   */
+  public setTouchOrbitEnabled(enabled: boolean): void {
+    this.controls.enableRotate = enabled;
+    this.controls.enableZoom = enabled;
+    this.controls.enablePan = enabled;
+    this.renderer.domElement.style.touchAction = enabled ? 'none' : 'pan-y';
+  }
+
   private handleResize(): void {
     const w = this.container.clientWidth;
     const h = this.container.clientHeight;
