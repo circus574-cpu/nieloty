@@ -1,6 +1,8 @@
-# Kurs Programowania Ruchu Maszyn CNC z Symulatorem 3D
+# 🦅 NIELOTY.PL — TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.
 
-Interaktywna aplikacja edukacyjna w przeglądarce ucząca programowania ruchu obrabiarek sterowanych numerycznie (**CNC – Computer Numerical Control**) w języku **G-code** (dialekt bazowy w stylu **ISO 6983 / Fanuc / Haas**) od całkowitych podstaw.
+## Kurs Programowania Ruchu Maszyn CNC z Symulatorem 3D (40 Lekcji • 5 Modułów)
+
+Interaktywna aplikacja edukacyjna w przeglądarce ucząca programowania ruchu obrabiarek sterowanych numerycznie (**CNC – Computer Numerical Control**) w języku **G-code** (dialekt bazowy w stylu **ISO 6983 / Fanuc / Haas** oraz porównanie z **Siemens Sinumerik**, **Heidenhain Klartext** i **GRBL / LinuxCNC**) od całkowitych podstaw.
 
 > **⚠️ WAŻNA INFORMACJA O BEZPIECZEŃSTWIE (BHP)**  
 > Ten kurs wykorzystuje uproszczony model nauczania i **nie zastępuje** dokumentacji techniczno-ruchowej rzeczywistego sterownika obrabiarki, szkolenia stanowiskowego BHP ani pracy pod nadzorem doświadczonego operatora/ustawiacza. Nigdy nie uruchamiaj niesprawdzonego programu na prawdziwej maszynie bez weryfikacji na pojedynczym bloku (`Single Block`), obniżonego posuwu szybkiego (`Rapid Override`) i nadzoru instruktora.
@@ -66,28 +68,32 @@ Tekst G-code (Fanuc/ISO, docelowo Siemens / Heidenhain / GRBL)
 - `src/core/dialects/` – parser dialektu ISO/Fanuc do postaci pośredniej (`CanonicalProgramIR`).
 - `src/core/gcode/` – czysty interpreter kinematyczny, geometria łuków (`arcs.ts`), kompensacja promieniowa (`cutterCompensation.ts`), rozwijanie cykli wiertarskich (`cannedCycles.ts`).
 - `src/core/simulation/` – model siatki wysokości 2.5D (`heightmapModel.ts`) oraz analizator kolizji (`materialAnalyzer.ts`).
-- `src/curriculum/` – sprawdzacz zadań po wyniku symulacji (`grader.ts`), słowniczek (`glossary.ts`), lekcje Modułu 0 (`module0/lessonsM0.ts`), lekcje Modułu 1 (`module1/lessonsM1.ts`) oraz sylabus Modułów 2–4 (`modules2to4/syllabusM2toM4.ts`).
+- `src/curriculum/` – sprawdzacz zadań po wyniku symulacji (`grader.ts`), słowniczek 25 pojęć (`glossary.ts`), 10 lekcji Modułu 0 (`module0/lessonsM0.ts`), 18 lekcji Modułu 1 (`module1/lessonsM1.ts`) oraz 12 interaktywnych lekcji Modułów 2–4 (`modules2to4/lessonsM2toM4.ts`).
 - `src/simulator3d/` – scena 3D Three.js (`SceneManager.ts`, `WorkpieceMesh.ts`, `ToolpathRenderer.ts`, `MachineActor.ts`, `SimulationPlayer.ts`).
-- `src/ui/` – komponenty interfejsu (`AppShell.ts`, `CodeEditor.ts`, `LessonPanel.ts`, `InteractiveWidgetsM0.ts`, `ModalStateBar.ts`, `ToolAndOffsetModal.ts`, `GlossaryModal.ts`).
+- `src/ui/` – komponenty interfejsu (`AppShell.ts`, `WelcomeGuideModal.ts`, `CodeEditor.ts`, `LessonPanel.ts`, `InteractiveWidgetsM0.ts`, `ModalStateBar.ts`, `ToolAndOffsetModal.ts`, `GlossaryModal.ts`).
 - `src/storage/` – zapis postępu z bezpiecznym fallbackiem do pamięci RAM (`progressStore.ts`).
-- `src/__tests__/` – 59 testów jednostkowych (`interpreter.test.ts`, `arcsAndComp.test.ts`, `materialAnalyzer.test.ts`, `grader.test.ts`).
+- `src/__tests__/` – 75 testów jednostkowych (`interpreter.test.ts`, `arcsAndComp.test.ts`, `materialAnalyzer.test.ts`, `grader.test.ts`).
 
 ---
 
-## 3. Struktura kursu
+## 3. Struktura kursu (40 lekcji w 5 modułach)
 
-1. **Moduł 0: Wstęp przed maszyną (Lekcje 0.A – 0.E, bez kodu G)**
-   - **0.A**: Rysunek techniczny – trzy rzuty prostokątne i odczyt wymiarów gabarytowych.
-   - **0.B**: Tolerancje wymiarowe, pasowania (luźne/ciasne) i chropowatość powierzchni ($Ra$).
-   - **0.C**: Narzędzia pomiarowe – wirtualna suwmiarka noniuszowa ($0{,}1\text{ mm}$) i mikrometr ($0{,}01\text{ mm}$).
+1. **Moduł 0: Wstęp od zera przed maszyną (10 lekcji: `0.0` – `0.E`, bez pisania kodu G)**
+   - **0.0**: Witaj w CNC – czym jest CNC, przykłady z życia, frezarka vs tokarka, droga od rysunku do gotowej części.
+   - **0.1**: 4 podstawowe pojęcia przed rysunkiem – wrzeciono, narzędzie, oś i współrzędna.
+   - **0.A i 0.2**: Rysunek techniczny cz. 1 i cz. 2 – trzy rzuty prostokątne, przekroje, fazy `C`, otwory przelotowe i ślepe `↧`.
+   - **0.B**: Tolerancje wymiarowe, pasowania i chropowatość powierzchni ($Ra$).
+   - **0.C**: Warsztat pomiarowy – wirtualna suwmiarka noniuszowa ($0{,}1\text{ mm}$), mikrometr ($0{,}01\text{ mm}$) i korekta zużycia `Wear`.
    - **0.D**: Podstawy skrawania – obroty $S$, posuw $F$, posuw na ostrze $f_z$ oraz chłodziwo.
-   - **0.E**: Budowa 3-osiowej frezarki CNC i zasady BHP.
-2. **Moduł 1: Frezarka 3-osiowa CNC (Lekcje 1.1 – 1.14)**
-   - Od układu współrzędnych i zasady `Z0` na górnej powierzchni detalu (`1.1`–`1.2`), przez `G0`/`G1` (`1.3`), technologię `F/S/M3/M8` (`1.4`), konturowanie i modalność (`1.5`), łuki `G2`/`G3` z `R` oraz `IJK` (`1.6`), `G90`/`G91` (`1.7`), bazy `G54`–`G59` (`1.8`), wymianę narzędzia `T/M6` (`1.9`), korekcję długości `G43 H` (`1.10`), korekcję promienia `G41/G42 D` (`1.11`), cykle wiercenia `G81/G82/G83` z `G98/G99` i `G80` (`1.12`), kompletny projekt z 3 narzędziami (`1.13`), aż po lekcję debugowania błędów (`1.14`).
-3. **Sylabus Modułów 2–4** (przygotowany pod dalszą rozbudowę w Etapie 5+):
-   - **Moduł 2**: Tokarka 2-osiowa (`X` jako średnica, `Z` jako oś wrzeciona, `G96`/`G97`, `G95`).
-   - **Moduł 3**: Frezarka 4-osiowa z podzielnicą obrotową (oś `A` wokół osi `X`).
-   - **Moduł 4**: Frezarka 5-osiowa kołyskowa (osie `A` i `C`, obróbka indeksowana `3+2`).
+   - **0.3**: Mocowanie detalu w imadle, podkładki równoległe, bazowanie `G54` i sonda pomiarowa.
+   - **0.4**: Pulpit operatora (`JOG`, `MPG`, `MDI`, `AUTO`) i procedura pierwszego uruchomienia (`Single Block`, `Feed Hold`, `Distance To Go`).
+   - **0.E**: Anatomia programu G-code i zasady BHP.
+2. **Moduł 1: Frezarka 3-osiowa CNC (18 lekcji: `1.1` – `1.18`)**
+   - Od układu współrzędnych i zasady `Z0` na górnej powierzchni detalu (`1.1`–`1.2`), przez `G0`/`G1` (`1.3`), technologię `F/S/M3/M8` (`1.4`), konturowanie i modalność (`1.5`), łuki `G2`/`G3` z `R` oraz `IJK` (`1.6`), `G90`/`G91` (`1.7`), bazy `G54`–`G59` (`1.8`), wymianę narzędzia `T/M6` (`1.9`), korekcję długości `G43 H` (`1.10`), korekcję promienia `G41/G42 D` (`1.11`), cykle wiercenia `G81/G82/G83` z `G98/G99` i `G80` (`1.12`), projekt 3-narzędziowy (`1.13`), debugowanie błędów (`1.14`), aż po planowanie powierzchni zygzakiem (`1.15`), frezowanie kieszeni (`1.16`), interpolację śrubową po helisie (`1.17`) i fazowanie krawędzi narzędziem `T2` (`1.18`).
+3. **Moduły 2–4: Tokarka CNC, 4 osie i 5 osi (12 interaktywnych lekcji z zadaniami: `2.1` – `4.4`)**
+   - **Moduł 2 (`2.1` – `2.4`)**: Tokarka 2-osiowa (`X` jako średnica, `Z` jako oś wrzeciona, `T0101`/`T0202`, `G96`/`G97`/`G50`, profil wielostopniowy z łukiem `G2 R15`).
+   - **Moduł 3 (`3.1` – `3.4`)**: Frezarka 4-osiowa z podzielnicą obrotową (oś `A` wokół osi `X`, indeksowanie `3+1` oraz płynna interpolacja śrubowa 4-osiowa).
+   - **Moduł 4 (`4.1` – `4.4`)**: Frezarka 5-osiowa kołyskowa (osie `A` i `C`, pochylona płaszczyzna `3+2` `G68.2`/`CYCLE800`/`PLANE SPATIAL`, `TCPM/RTCP G43.4` oraz porównanie 4 dialektów przemysłowych).
 
 ---
 
@@ -189,3 +195,8 @@ W pliku `src/curriculum/module1/lessonsM1.ts` dopisz nowy obiekt spełniający i
    - Symulator sprawdza geometryczną poprawność toru, kolizje ruchu szybkiego `G0` w materiale, wejście w materiał przy wyłączonym wrzecionie (`M5`) oraz wylicza czas obróbki, lecz nie modeluje sił skrawania ani obciążeń termicznych.
 4. **Zakres obsługiwanych kodów w Etapie 1–4**:
    - Kody odniesienia maszynowego `G28` oraz `G53`, makra parametryczne (*Custom Macro B*), podprogramy `M98`/`M99` oraz gwintowanie sztywne `G84` są jawnie zgłaszane przez interpreter jako `UNSUPPORTED_FEATURE` z czytelnym komunikatem po polsku.
+
+---
+
+**🦅 TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.**  
+**Wszelkie prawa od mnie dla Ciebie. Copyright nieloty.pl**
