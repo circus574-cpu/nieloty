@@ -253,13 +253,24 @@ export class LessonPanel {
 
     this.container.innerHTML = `
       <div class="lesson-panel-wrapper">
+        <div class="nieloty-subpage-top-banner">
+          <span class="nieloty-logo-badge">🦅 NIELOTY.PL</span>
+          <span class="nieloty-slogan-inline">TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
+        </div>
+
         <div class="lesson-top-bar">
           <div>
             <span class="lesson-module-badge">
               ${
-                isModule0
+                lesson.moduleId === 'MODULE_0'
                   ? 'MODUŁ 0 • WPROWADZENIE OD ZERA (BEZ KODU G)'
-                  : 'MODUŁ 1 • FREZARKA 3-OSIOWA CNC'
+                  : lesson.moduleId === 'MODULE_1'
+                  ? 'MODUŁ 1 • FREZARKA 3-OSIOWA CNC (OD PODSTAW DO PROJEKTU)'
+                  : lesson.moduleId === 'MODULE_2'
+                  ? 'MODUŁ 2 • TOKARKA 2-OSIOWA CNC (OSIE X/Z I ŚREDNICE)'
+                  : lesson.moduleId === 'MODULE_3'
+                  ? 'MODUŁ 3 • FREZARKA 4-OSIOWA CNC (PODZIELNICA – OŚ A)'
+                  : 'MODUŁ 4 • OBRÓBKA 5-OSIOWA (A+C) I DIALEKTY STEROWAŃ'
               }
             </span>
             <h2 class="lesson-title">${lesson.titlePl}</h2>
@@ -378,6 +389,10 @@ export class LessonPanel {
             Następna lekcja ▶
           </button>
         </div>
+
+        <footer class="nieloty-subpage-footer">
+          Wszelkie prawa od mnie dla Ciebie. Copyright nieloty.pl
+        </footer>
       </div>
     `;
 

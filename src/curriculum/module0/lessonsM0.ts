@@ -274,6 +274,75 @@ M30`,
   },
 
   // =========================================================================
+  // LEKCJA 0.A2: RYSUNEK TECHNICZNY CZ. 2 – PRZEKROJE, OTWORY NIEPRZELOTOWE (↧) I FAZY (C)
+  // =========================================================================
+  {
+    id: 'M0_2',
+    moduleId: 'MODULE_0',
+    orderIndex: 3,
+    titlePl: 'Lekcja 0.A2: Rysunek techniczny cz. 2 – Przekroje, fazy (C / 45°) i głębokość otworów (↧)',
+    shortSubtitlePl: 'Jak odróżnić otwór na wylot od otworu ślepego, co oznacza kreskowanie przekroju i ścięcie krawędzi',
+    theoryParagraphsPl: [
+      '1. CO TO JEST PRZEKRÓJ NA RYSUNKU TECHNICZNYM? (KRESKOWANIE POD KĄTEM 45°)\nGdy wewnątrz kostki znajdują się kieszenie, stopnie i otwory o różnej głębokości, na zwykłym widoku z boku byłyby one zasłonięte przez przednią ściankę. Dlatego konstruktor stosuje PRZEKRÓJ (Section View): wyobraża sobie, że przecina detal piłą dokładnie przez środek otworów i pokazuje nam wnętrze! Miejsca, w których „piła” przecięła lity metal, są na rysunku zakreskowane cienkimi ukośnymi liniami pod kątem 45°. Tam, gdzie w metalu jest pustka (otwór lub kieszeń), kreskowania NIE MA.',
+      '2. OTWÓR PRZELOTOWY (NA WYLOT) VS. OTWÓR NIEPRZELOTOWY (ŚLEPY – SYMBOL ↧)\n• OTWÓR PRZELOTOWY (Through Hole): przechodzi przez całą grubość płytki na wylot. Na przekroju jego ścianki biegną od górnej aż do dolnej krawędzi detalu.\n• OTWÓR NIEPRZELOTOWY / ŚLEPY (Blind Hole): kończy się na pewnej głębokości wewnątrz metalu (ma stożkowe dno po czubku wiertła). Na rysunku oznacza się go symbolem strzałki skierowanej w dół do kreski: „↧”. Przykład: zapis „Ø8 ↧12” oznacza: wywierć otwór o średnicy 8 mm na głębokość 12 mm (czyli w naszym układzie współrzędnych do Z = -12 mm!).',
+      '3. CO OZNACZA SYMBOL FAZY „C2” LUB „2×45°”? (USUWANIE OSTRYCH KRAWĘDZI)\nŚwieżo wyfrezowana krawędź metalu jest ostra jak żyletka i ma drobne zadziory (Burrs), którymi łatwo rozciąć dłoń. Dlatego na rysunkach prawie zawsze spotkasz zapis „C1”, „C2” albo „1,5×45°”. Oznacza to FAZĘ (Chamfer), czyli ścięcie ostrego narożnika pod kątem 45 stopni na szerokości 1 mm lub 2 mm za pomocą stożkowego frezu fazującego (w naszej maszynie to narzędzie T2).',
+      '4. SPOSOBY WYMIAROWANIA NA RYSUNKU: OD BAZY (G90) VS. ŁAŃCUCHOWE (G91)\n• WYMIAROWANIE OD WSPÓLNEJ BAZY (Absolute): wszystkie otwory mają wymiary podane od jednej lewej krawędzi (np. 20 mm, 50 mm, 80 mm) – odpowiada to programowaniu bezwzględnemu G90.\n• WYMIAROWANIE ŁAŃCUCHOWE / SZEREGOWE (Incremental): podana jest odległość od pierwszego otworu do drugiego (+30 mm) i od drugiego do trzeciego (+30 mm) – odpowiada to programowaniu przyrostowemu G91.',
+    ],
+    cheatSheetRows: [
+      {
+        codeOrSymbol: 'Ukośne kreskowanie ///',
+        meaningPl: 'Przekrój – oznacza lity, przecięty materiał; puste niezakreskowane pole to otwór lub kieszeń',
+        examplePl: 'Przekrój A-A przechodzący przez oś otworów',
+      },
+      {
+        codeOrSymbol: '↧ (np. Ø6 ↧15)',
+        meaningPl: 'Głębokość otworu nieprzelotowego (ślepego) mierzona od górnej powierzchni',
+        examplePl: 'Ø6 ↧15 = wiertło Ø6 mm wierci na głębokość Z = -15 mm',
+      },
+      {
+        codeOrSymbol: 'C2 lub 2×45°',
+        meaningPl: 'Faza (ścięcie krawędzi) o szerokości 2 mm pod kątem 45 stopni',
+        examplePl: 'Usuwa ostre krawędzie i ułatwia wkładanie śrub oraz sworzni',
+      },
+      {
+        codeOrSymbol: '⌴ (Pogłębienie walcowe)',
+        meaningPl: 'Szersze wybranie na górze otworu, w którym chowa się łeb śruby imbusowej',
+        examplePl: 'Ø6.6 przelotowo + ⌴Ø11 ↧6.5 pod łeb śruby M6',
+      },
+    ],
+    stepByStepGuidePl: [
+      'Spójrz na przekrój płytki w ćwiczeniu poniżej: zobacz różnicę między otworem przelotowym a nieprzelotowym z symbolem głębokości ↧.',
+      'Odpowiedz na 3 pytania dotyczące zapisu „Ø6 ↧12”, znaczenia fazy „2×45°” oraz kreskowania przekroju.',
+    ],
+    commonMistakeWarningPl:
+      'Gdy wiercisz otwór PRZELOTOWY (na wylot) w płytce o grubości 20 mm, zatrzymanie czubka wiertła dokładnie na Z = -20 mm NIE przewierci otworu na pełną średnicę, bo wiertło ma stożkowy czubek! Aby otwór przeszedł czysto na wylot, czubek wiertła musi wyjść o 2–3 mm poniżej dolnej ścianki (np. na Z = -22.5 mm, pomiędzy podkładkami równoległymi).',
+    taskDescriptionPl:
+      'W interaktywnym ćwiczeniu przekrojów rysunkowych poniżej rozszyfruj zapis „Ø6 ↧12”, znaczenie fazy „2×45°” oraz kreskowania przekroju.',
+    assertions: [],
+    hintsPl: [
+      'Podpowiedź 1/3: Symbol „↧12” przy zapisie „Ø6 ↧12” oznacza otwór nieprzelotowy o głębokości 12 mm (czyli wiercenie do Z = -12 mm).',
+      'Podpowiedź 2/3: Zapis „2×45°” (lub C2) oznacza ścięcie ostrej krawędzi (fazę) o szerokości 2 mm pod kątem 45 stopni.',
+      'Podpowiedź 3/3: Ukośne kreskowanie na przekroju oznacza miejsca, gdzie przecięto pełny (lity) metal.',
+    ],
+    solutionExplanationPl:
+      'Świetnie! Potrafisz już odróżnić na rysunku otwór przelotowy od nieprzelotowego (↧), rozumiesz po co wykonuje się fazy (C / 45°) i jak czytać przekroje.',
+    quiz: [
+      {
+        id: 'q_m0_a2',
+        questionPl: 'Na rysunku technicznym przy otworze widnieje oznaczenie „Ø6 ↧14”. Na jaką współrzędną Z musimy opuścić wiertło (gdy Z0 jest na górnej powierzchni płytki)?',
+        optionsPl: [
+          'Z = -14 mm (14 mm w głąb materiału poniżej powierzchni Z0)',
+          'Z = +14 mm (14 mm w powietrzu nad płytką)',
+          'Z = -6 mm',
+        ],
+        correctOptionIndex: 0,
+        explanationPl:
+          'Ø6 określa średnicę wiertła (6 mm), natomiast symbol ↧14 określa głębokość wiercenia równą 14 mm w głąb materiału, czyli do współrzędnej Z = -14 mm.',
+      },
+    ],
+  },
+
+  // =========================================================================
   // LEKCJA 0.B: TOLERANCJE PODSTAWOWE
   // =========================================================================
   {
@@ -468,6 +537,142 @@ M30`,
         correctOptionIndex: 0,
         explanationPl:
           'Zbyt duży posuw na jeden obrót powoduje gwałtowny wzrost siły skrawania i ukruszenie lub złamanie frezu.',
+      },
+    ],
+  },
+
+  // =========================================================================
+  // LEKCJA 0.D2: MOCOWANIE DETALU W IMADLE, BAZOWANIE (M vs W / G54) I SONDOWANIE
+  // =========================================================================
+  {
+    id: 'M0_3',
+    moduleId: 'MODULE_0',
+    orderIndex: 7,
+    titlePl: 'Lekcja 0.D2: Mocowanie w imadle, podkładki równoległe i bazowanie detalu (M vs G54)',
+    shortSubtitlePl: 'Jak zamocować kostkę i jak pokazać maszynie, gdzie leży narożnik (0, 0, 0) • Sonda dotykowa Renishaw',
+    theoryParagraphsPl: [
+      '1. JAK PRAWIDŁOWO ZAMOCOWAĆ KOSTKĘ W IMADLE MASZYNOWYM?\nZanim maszyna ruszy, musisz pewnie unieruchomić materiał na stole. Na frezarce najczęściej używamy precyzyjnego IMADŁA MASZYNOWEGO:\n• Imadło ma dwie szczęki: tylna szczęka jest STAŁA (nieruchoma – to nasza baza odniesienia!), a przednia szczęka jest RUCHOMA (dociskana śrubą).\n• Pod kostką układamy dwie stalowe, szlifowane PODKŁADKI RÓWNOLEGŁE (Parallels). Po co? Po pierwsze, unoszą kostkę wyżej, żeby wystawała ponad górną krawędź szczęk imadła (by frez nie zarysował imadła!). Po drugie, między podkładkami pod środkiem kostki zostaje pusta przestrzeń – gdy wiercimy otwór na wylot, czubek wiertła wychodzi bezpiecznie w powietrze, zamiast wiercić dziurę w dnie imadła!\n• Przy dokręcaniu imadła zawsze dobijamy kostkę lekko gumowym lub miedzianym młotkiem z góry, aby idealnie siadła na obu podkładkach równoległych.',
+      '2. SKĄD MASZYNA WIE, GDZIE LEŻY KOSTKA? ZERO MASZYNY (M) A ZERO PRZEDMIOTU (W / G54)\nKiedy przykręcisz imadło na dużym stole, maszyna na początku zna tylko swoje fabryczne ZERO MASZYNY (oznaczane literą M – Machine Zero, w rogu przestrzeni roboczej). My natomiast chcemy pisać program względem lewego przedniego górnego narożnika naszej kostki – ten punkt nazywamy ZEREM PRZEDMIOTU (oznaczanym literą W – Workpiece Zero oraz kodem G54).\nDlatego przed uruchomieniem programu musimy zmierzyć odległość od Zera Maszyny (M) do narożnika kostki (W) i wpisać ją do tabeli sterownika w wierszu G54 (możesz podejrzeć tę tabelę w zakładce „🛠 Tabele T / H / D / G54”).',
+      '3. JAK WYZNACZA SIĘ NAROŻNIK G54 W WARSZTACIE? KRAWĘDZIAK I SONDA DOTYKOWA RENISHAW\nOperator może wyznaczyć punkt zerowy kostki (X0, Y0, Z0) na dwa sposoby:\n• Sposób ręczny: zakłada do wrzeciona mechaniczny CZUJNIK KRAWĘDZIOWY („kręciołek” / Edge Finder) i powoli podjeżdża do lewej ścianki (zapisuje X0) oraz do przedniej ścianki (zapisuje Y0).\n• Sposób automatyczny (nowoczesny): maszyna pobiera z magazynu elektroniczną SONDĘ DOTYKOWĄ (np. Renishaw) z czerwoną rubinową kulką na końcu. Sonda sama dotyka lewego boku kostki, przedniego boku i górnej ścianki, wysyła sygnał błyskowy/radiowy do sterownika i automatycznie zapisuje idealne X0, Y0 oraz Z0 w tabeli G54!',
+    ],
+    cheatSheetRows: [
+      {
+        codeOrSymbol: 'Szczęka stała imadła',
+        meaningPl: 'Nieruchoma szczęka imadła ustawiona równolegle do osi X – do niej zawsze bazujemy detal',
+        examplePl: 'Gwarantuje, że każda kolejna włożona sztuka leży w tym samym miejscu Y',
+      },
+      {
+        codeOrSymbol: 'Podkładki równoległe',
+        meaningPl: 'Dwie precyzyjne stalowe listwy kładzione pod kostkę przy szczękach imadła',
+        examplePl: 'Unoszą detal ponad szczęki i chronią dno imadła podczas wiercenia na wylot',
+      },
+      {
+        codeOrSymbol: 'Zero Maszyny (M) vs. G54 (W)',
+        meaningPl: 'M to stały narożnik fabryczny maszyny; G54 (W) to punkt (0,0,0) ustawiony na narożniku naszej kostki',
+        examplePl: 'W programie zawsze piszemy współrzędne względem G54 (narożnika kostki)',
+      },
+      {
+        codeOrSymbol: 'Sonda dotykowa Renishaw',
+        meaningPl: 'Automatyczny czujnik z rubinową kulką mierzący położenie ścianek kostki w kilka sekund',
+        examplePl: 'Automatycznie wpisuje X0, Y0, Z0 do rejestru G54',
+      },
+    ],
+    stepByStepGuidePl: [
+      'Spójrz na schemat mocowania kostki w imadle poniżej: zwróć uwagę na podkładki równoległe pod kostką oraz sondę z rubinową kulką nad narożnikiem G54.',
+      'Odpowiedz na 3 pytania praktyczne z mocowania i bazowania detalu, a następnie kliknij „Sprawdź bazowanie detalu”.',
+    ],
+    commonMistakeWarningPl:
+      'Zanim położysz kostkę na podkładkach równoległych w imadle, zdmuchnij sprężonym powietrzem wszystkie wióry! Jeden drobny wiór przyklejony pod spodem kostki sprawi, że detal stanie krzywo i wszystkie otwory wyjdą pod kątem.',
+    taskDescriptionPl:
+      'W interaktywnym ćwiczeniu poniżej wskaż prawidłową rolę podkładek równoległych w imadle, różnicę między Zerem Maszyny (M) a Zerem Przedmiotu (G54) oraz zadanie sondy dotykowej.',
+    assertions: [],
+    hintsPl: [
+      'Podpowiedź 1/3: Podkładki równoległe unoszą detal ponad szczęki imadła i zostawiają pod środkiem wolne miejsce na wyjście wiertła.',
+      'Podpowiedź 2/3: Punkt (0, 0, 0) ustawiony na narożniku obrabianej kostki zapisujemy w sterowniku jako G54 (Zero Przedmiotu W).',
+      'Podpowiedź 3/3: Sonda dotykowa z rubinową kulką służy do automatycznego dotknięcia krawędzi kostki i wyznaczenia punktu zerowego G54.',
+    ],
+    solutionExplanationPl:
+      'Znakomicie! Wiesz już, jak zamocować kostkę w imadle na podkładkach równoległych, czym różni się Zero Maszyny (M) od Zera Przedmiotu (W / G54) i jak działa sonda pomiarowa.',
+    quiz: [
+      {
+        id: 'q_m0_d2',
+        questionPl: 'Po co pod obrabianą kostkę w imadle maszynowym podkłada się dwie stalowe podkładki równoległe?',
+        optionsPl: [
+          'Aby unieść górną część kostki ponad szczęki imadła oraz stworzyć wolną przestrzeń pod spodem, dzięki czemu wiertło wiercące na wylot nie uszkodzi dna imadła',
+          'Aby kostka ślizgała się podczas frezowania',
+          'Tylko dla ozdoby',
+        ],
+        correctOptionIndex: 0,
+        explanationPl:
+          'Podkładki równoległe zapewniają równe, powtarzalne podparcie na odpowiedniej wysokości oraz wolną przestrzeń pod obrabianym detalem.',
+      },
+    ],
+  },
+
+  // =========================================================================
+  // LEKCJA 0.D3: PULPIT OPERATORA (JOG, MPG, MDI, AUTO) I PIERWSZE URUCHOMIENIE PROGRAMU
+  // =========================================================================
+  {
+    id: 'M0_4',
+    moduleId: 'MODULE_0',
+    orderIndex: 8,
+    titlePl: 'Lekcja 0.D3: Pulpit operatora i bezpieczne Pierwsze Uruchomienie programu (Single Block)',
+    shortSubtitlePl: 'Tryby JOG, kółko ręczne MPG, MDI, AUTO oraz jak sprawdzić „Distance To Go” przed dotknięciem metalu',
+    theoryParagraphsPl: [
+      '1. CZTERY TRYBY PRACY NA PULPICIE MASZYNY CNC\nStojąc przed prawdziwą obrabiarką CNC, na panelu sterowania masz przełącznik trybu pracy:\n• TRYB JOG (Przyciski ręcznego ruchu): dopóki trzymasz wciśnięty przycisk osi (np. X+ lub Z+), wrzeciono jedzie w wybranym kierunku (możesz to wypróbować w zakładce „🕹 Ręczny ruch (JOG)” w naszej aplikacji!).\n• TRYB HANDLE / MPG (Kółko ręczne): okrągłe pokrętło na pulpicie, którym przesuwasz wybraną oś z niezwykłą precyzją – na najniższym biegu (x1) jeden ząbek kółka przesuwa oś o jedną tysięczną milimetra (0,001 mm)!\n• TRYB MDI (Manual Data Input): tryb ręcznego wpisania pojedynczej komendy (np. „T2 M6” aby wymienić narzędzie albo „S2000 M3” aby włączyć wrzeciono) bez otwierania pełnego programu.\n• TRYB AUTO / MEM (Praca automatyczna): wykonywanie całego programu G-code.',
+      '2. PRZYCISKI, KTÓRE RATUJĄ NARZĘDZIE I MASZYNĘ PRZED KOLIZJĄ\n• ZIELONY [CYCLE START]: uruchamia ruch w programie.\n• CZERWONY [FEED HOLD] (Wstrzymanie posuwu): Twój najważniejszy przycisk podczas testowania! Po jego naciśnięciu osie X, Y, Z natychmiast zatrzymują się w miejscu, ale wrzeciono nadal bezpiecznie się kręci.\n• PRZYCISK [SINGLE BLOCK] (Pojedyncza linia): po jego włączeniu maszyna NIE leci przez cały program naraz, tylko po każdym naciśnięciu CYCLE START wykonuje JEDNĄ LINIJKĘ kodu i staje (w naszym symulatorze pod oknem 3D służy do tego przycisk „Następna linia ▶”!).\n• POKRĘTŁO [RAPID OVERRIDE]: pozwala zwolnić ruchy szybkie G0 ze 100% do ostrożnych 25% lub 5%.',
+      '3. ZŁOTA PROCEDURA PIERWSZEGO URUCHOMIENIA NOWEGO PROGRAMU (KONTROLA „DISTANCE TO GO”)\nJak zawodowiec uruchamia nowy program po raz pierwszy na maszynie?\n1) Najpierw sprawdza ścieżkę na ekranie symulatora 3D (dokładnie tak jak Ty tutaj!).\n2) Włącza tryb SINGLE BLOCK (jedna linia na raz) i zmniejsza prędkość ruchów szybkich G0 na 25%.\n3) Gdy narzędzie zjeżdża w dół w osi Z w stronę kostki, naciska czerwony przycisk FEED HOLD, zatrzymując czubek frezu np. 20 mm w powietrzu nad kostką.\n4) Patrzy na ekran na licznik „DISTANCE TO GO” (Pozostała droga do końca ruchu). Jeśli widzi, że od czubka frezu do kostki jest 20 mm, a licznik pokazuje „Pozostało Z: -15 mm”, ma 100% pewności, że narzędzie zatrzyma się bezpiecznie 5 mm NAD kostką (na Z5) i można śmiało kontynuować!',
+    ],
+    cheatSheetRows: [
+      {
+        codeOrSymbol: 'JOG oraz Kółko MPG',
+        meaningPl: 'Ręczne przesuwanie osi przyciskami (JOG) lub precyzyjnym pokrętłem impulsowym (MPG)',
+        examplePl: 'Dojazd narzędziem podczas ustawiania bazy G54',
+      },
+      {
+        codeOrSymbol: 'MDI',
+        meaningPl: 'Wpisanie i wykonanie pojedynczego polecenia z klawiatury (np. wymiana narzędzia T1 M6)',
+        examplePl: 'Szybkie przezbrojenie maszyny przez ustawiacza',
+      },
+      {
+        codeOrSymbol: 'SINGLE BLOCK',
+        meaningPl: 'Wykonywanie programu linijka po linijce (jedno kliknięcie = jedna linia ruchu)',
+        examplePl: 'W naszym symulatorze: przycisk „Następna linia ▶” pod oknem 3D',
+      },
+      {
+        codeOrSymbol: 'FEED HOLD + Distance To Go',
+        meaningPl: 'Wstrzymanie zjazdu osi Z nad kostką i sprawdzenie na ekranie, ile milimetrów ruchu jeszcze pozostało',
+        examplePl: 'Chroni w 100% przed uderzeniem w detal przy pierwszym uruchomieniu',
+      },
+    ],
+    stepByStepGuidePl: [
+      'Spójrz pod okno 3D po prawej stronie: zobacz przyciski „▶ Start”, „◀ Krok -1” oraz „Następna linia ▶” (nasz odpowiednik trybu Single Block).',
+      'W ćwiczeniu poniżej wskaż prawidłowe zachowanie operatora podczas pierwszego uruchomienia nowego programu.',
+    ],
+    commonMistakeWarningPl:
+      'Nigdy nie uruchamiaj świeżo napisanego programu od razu na 100% prędkości bez włączonego trybu Single Block! Jedna literówka (np. Z-50 zamiast Z5) przy pełnej prędkości G0 nie daje człowiekowi nawet ułamka sekundy na reakcję.',
+    taskDescriptionPl:
+      'W interaktywnym ćwiczeniu z obsługi pulpitu operatora poniżej wskaż prawidłowe funkcje trybów SINGLE BLOCK, FEED HOLD oraz MDI.',
+    assertions: [],
+    hintsPl: [
+      'Podpowiedź 1/3: Przycisk SINGLE BLOCK służy do ostrożnego wykonywania programu po jednej linijce kodu.',
+      'Podpowiedź 2/3: Przycisk FEED HOLD zatrzymuje ruch posuwowy osi X/Y/Z nad detalem, pozwalając bezpiecznie sprawdzić pozostałą drogę (Distance To Go).',
+      'Podpowiedź 3/3: Tryb MDI służy do wpisania i wykonania pojedynczej komendy (np. T1 M6).',
+    ],
+    solutionExplanationPl:
+      'Brawo! Znasz już tryby pracy pulpitu CNC oraz zawodową procedurę pierwszego uruchomienia programu (Single Block + Feed Hold + kontrola Distance To Go).',
+    quiz: [
+      {
+        id: 'q_m0_d3',
+        questionPl: 'Do czego służy tryb „SINGLE BLOCK” (w naszym symulatorze przycisk „Następna linia ▶”) podczas pierwszego testowania nowego programu?',
+        optionsPl: [
+          'Pozwala wykonywać program ostrożnie po jednej linijce kodu na raz, zatrzymując maszynę po każdym ruchu do kontroli przez operatora',
+          'Kasuje wszystkie programy z pamięci maszyny',
+          'Przyspiesza maszynę dziesięciokrotnie',
+        ],
+        correctOptionIndex: 0,
+        explanationPl:
+          'W trybie Single Block każde naciśnięcie Cycle Start wykonuje dokładnie jeden blok (jedną linię) kodu, co daje operatorowi pełną kontrolę nad pierwszym przejazdem narzędzia.',
       },
     ],
   },

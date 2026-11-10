@@ -66,9 +66,14 @@ export class WelcomeGuideModal {
   private render(): void {
     this.overlayEl.innerHTML = `
       <div class="modal-card welcome-modal-card">
+        <div class="nieloty-subpage-top-banner">
+          <span class="nieloty-logo-badge">🦅 NIELOTY.PL</span>
+          <span class="nieloty-slogan-inline">TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
+        </div>
+
         <div class="modal-header">
           <div>
-            <span class="brand-tag">PRZEWODNIK PO APLIKACJI • OD ABSOLUTNEGO ZERA</span>
+            <span class="brand-tag">PRZEWODNIK PO APLIKACJI • OD ABSOLUTNEGO ZERA (40 LEKCJI • 5 MODUŁÓW)</span>
             <h3>👋 Witaj w interaktywnym kursie programowania CNC z symulatorem 3D!</h3>
           </div>
           <button type="button" id="btn-close-welcome" class="btn" aria-label="Zamknij ekran startowy">
@@ -79,7 +84,7 @@ export class WelcomeGuideModal {
         <div class="welcome-modal-body">
           <p class="welcome-lead">
             Ten program szkoleniowy został stworzony dla osób, które <strong>nigdy wcześniej nie widziały maszyny CNC ani nie pisały żadnego kodu</strong>.
-            Krok po kroku przejdziesz drogę od prostych pojęć warsztatowych aż do samodzielnego programowania obróbki w 3D.
+            Krok po kroku przejdziesz drogę od prostych pojęć warsztatowych aż do samodzielnego programowania obróbki 3-, 4- i 5-osiowej w 3D.
           </p>
 
           <div class="welcome-steps-grid">
@@ -115,10 +120,11 @@ export class WelcomeGuideModal {
 
             <div class="welcome-step-box">
               <span class="welcome-step-num">4</span>
-              <h4>🗺️ Twoja ścieżka nauki (Jak iść po kolei?)</h4>
+              <h4>🗺️ Twoja ścieżka nauki (40 lekcji w 5 modułach)</h4>
               <p>
-                • <strong>Moduł 0 (Lekcje 0.0 – 0.E)</strong>: Wstęp bez pisania kodu – czym jest CNC, 4 podstawowe pojęcia (wrzeciono, narzędzie, oś, współrzędna), rysunek techniczny, tolerancje i pomiary suwmiarką.<br/>
-                • <strong>Moduł 1 (Lekcje 1.1 – 1.14)</strong>: Samodzielne programowanie frezarki 3-osiowej ze sprawdzianem po każdej lekcji w symulatorze 3D!
+                • <strong>Moduł 0 (10 lekcji 0.0 – 0.E)</strong>: Wstęp bez pisania kodu – czym jest CNC, 4 podstawowe pojęcia, rysunek techniczny, suwmiarka, bazowanie G54 i pulpit operatora.<br/>
+                • <strong>Moduł 1 (18 lekcji 1.1 – 1.18)</strong>: Pełny kurs frezarki 3-osiowej (G0, G1, G2/G3, G43, G41/G42, G81/G83, G98/G99, planowanie, kieszenie, helisa i fazowanie).<br/>
+                • <strong>Moduły 2–4 (12 lekcji 2.1 – 4.4)</strong>: Tokarka CNC (G96/G97), frezarka 4-osiowa (oś A) oraz 5-osiowa (A+C, G68.2, TCPM G43.4 i 4 dialekty sterowań).
               </p>
             </div>
           </div>
@@ -131,6 +137,10 @@ export class WelcomeGuideModal {
               ▶ Przejdź do aktualnie wybranej lekcji
             </button>
           </div>
+
+          <footer class="nieloty-subpage-footer">
+            Wszelkie prawa od mnie dla Ciebie. Copyright nieloty.pl
+          </footer>
         </div>
       </div>
     `;

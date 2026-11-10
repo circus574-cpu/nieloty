@@ -11,11 +11,19 @@ import { CNC_GLOSSARY } from '../curriculum/glossary';
 import { gradeLessonTask } from '../curriculum/grader';
 import { MODULE_0_LESSONS } from '../curriculum/module0/lessonsM0';
 import { MODULE_1_LESSONS } from '../curriculum/module1/lessonsM1';
+import {
+  MODULE_2_LESSONS,
+  MODULE_3_LESSONS,
+  MODULE_4_LESSONS,
+  MODULES_2_TO_4_LESSONS,
+} from '../curriculum/modules2to4/lessonsM2toM4';
 import { SYLLABUS_MODULES_2_TO_4 } from '../curriculum/modules2to4/syllabusM2toM4';
 import { SafeProgressStore } from '../storage/progressStore';
 
+const ALL_GCODE_LESSONS = [...MODULE_1_LESSONS, ...MODULES_2_TO_4_LESSONS];
+
 function evaluateGCodeForLesson(lessonId: string, sourceCode: string) {
-  const lesson = MODULE_1_LESSONS.find((l) => l.id === lessonId);
+  const lesson = ALL_GCODE_LESSONS.find((l) => l.id === lessonId);
   if (!lesson || !lesson.solutionCode || !lesson.starterCode) {
     throw new Error(`Lekcja ${lessonId} nie posiada zadania G-code`);
   }
@@ -46,8 +54,8 @@ function evaluateGCodeForLesson(lessonId: string, sourceCode: string) {
   return gradeLessonTask(lesson.assertions, interp, material);
 }
 
-describe('TaskGrader - sprawdzanie zadań po wyniku symulacji (Moduł 1: Lekcje 1-14)', () => {
-  for (const lesson of MODULE_1_LESSONS) {
+describe('TaskGrader - sprawdzanie zadań po wyniku symulacji (Moduły 1–4: wszystkie praktyczne lekcje G-code)', () => {
+  for (const lesson of ALL_GCODE_LESSONS) {
     it(`Lekcja ${lesson.id} (${lesson.titlePl}): wzorcowe rozwiązanie zalicza 100% kryteriów, a kod startowy nie zalicza`, () => {
       expect(lesson.solutionCode).toBeDefined();
       expect(lesson.starterCode).toBeDefined();
@@ -132,15 +140,23 @@ describe('SafeProgressStore oraz kompletność struktury kursu (Moduł 0, Słown
     expect(store.getCompletedLessonsCount(['M0_A', 'M1_01', 'M1_02'])).toBe(1);
   });
 
-  it('Posiada kompletny Moduł 0 (7 lekcji: 0.0, 0.1 oraz A-E), Moduł 1 (14 lekcji), Słowniczek oraz Sylabus M2-M4 (3 moduły)', () => {
-    expect(MODULE_0_LESSONS.length).toBe(7);
+  it('Posiada kompletny Moduł 0 (10 lekcji), Moduł 1 (18 lekcji), Moduły 2–4 (12 lekcji = 40 lekcji łącznie) oraz Słowniczek', () => {
+    expect(MODULE_0_LESSONS.length).toBe(10);
     expect(MODULE_0_LESSONS[0]?.id).toBe('M0_0');
     expect(MODULE_0_LESSONS[1]?.id).toBe('M0_1');
-    expect(MODULE_1_LESSONS.length).toBe(14);
-    expect(CNC_GLOSSARY.length).toBeGreaterThanOrEqual(12);
+    expect(MODULE_1_LESSONS.length).toBe(18);
+    expect(MODULE_2_LESSONS.length).toBe(4);
+    expect(MODULE_3_LESSONS.length).toBe(4);
+    expect(MODULE_4_LESSONS.length).toBe(4);
+    expect(MODULES_2_TO_4_LESSONS.length).toBe(12);
+    expect(CNC_GLOSSARY.length).toBeGreaterThanOrEqual(20);
     expect(SYLLABUS_MODULES_2_TO_4.length).toBe(3);
 
-    for (const lesson of [...MODULE_0_LESSONS, ...MODULE_1_LESSONS]) {
+    for (const lesson of [
+      ...MODULE_0_LESSONS,
+      ...MODULE_1_LESSONS,
+      ...MODULES_2_TO_4_LESSONS,
+    ]) {
       expect(lesson.quiz.length).toBeGreaterThan(0);
       expect(lesson.theoryParagraphsPl.length).toBeGreaterThan(0);
     }

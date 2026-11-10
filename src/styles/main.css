@@ -1304,3 +1304,112 @@ body {
   line-height: 1.45;
 }
 
+/* ==========================================================================
+   NIELOTY.PL – GŁÓWNY NAGŁÓWEK TOP/LOGO ORAZ STOPKI WSZĘDZIE
+   ========================================================================== */
+
+.nieloty-top-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 1.15rem;
+  background: linear-gradient(90deg, #090d16 0%, #1e293b 50%, #090d16 100%);
+  border-bottom: 2px solid var(--accent-amber);
+}
+
+.nieloty-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.nieloty-logo-svg {
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.35));
+}
+
+.nieloty-brand-domain {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--accent-amber);
+}
+
+.nieloty-main-headline {
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fef3c7;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.nieloty-subpage-top-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.8rem;
+  margin-bottom: 0.75rem;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-left: 4px solid var(--accent-amber);
+  border-radius: 6px;
+}
+
+.nieloty-logo-badge {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--accent-amber);
+}
+
+.nieloty-slogan-inline {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #fde68a;
+  text-transform: uppercase;
+}
+
+.nieloty-subpage-footer {
+  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-amber);
+  background: rgba(15, 23, 42, 0.85);
+  border-top: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: 6px;
+}
+
+.nieloty-global-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: #090d16;
+  border-top: 2px solid var(--accent-amber);
+  font-size: 0.85rem;
+}
+
+.nieloty-footer-logo {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fde68a;
+}
+
+.nieloty-footer-copy {
+  font-weight: 700;
+  color: var(--accent-amber);
+}
+
+

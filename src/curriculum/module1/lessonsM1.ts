@@ -489,10 +489,33 @@ M30`,
     titlePl: 'Lekcja 1.6: Łuki – G2 (w prawo) i G3 (w lewo), formy R oraz IJK',
     shortSubtitlePl: 'Zaokrąglanie naroży promieniem R oraz wycinanie okręgów za pomocą środka I, J',
     theoryParagraphsPl: [
-      'Części mechaniczne rzadko mają wyłącznie ostre naroża. Do jazdy po łuku kołowym służą dwa polecenia: G2 (ruch zgodny ze wskazówkami zegara – Clockwise, CW) oraz G3 (ruch przeciwny do wskazówek zegara – Counter-Clockwise, CCW, patrząc z góry na stół w płaszczyźnie G17).',
-      'W bloku G2 lub G3 podajemy współrzędne punktu KOŃCOWEGO łuku (X, Y) oraz informację o krzywiźnie na jeden z dwóch sposobów: 1) Sposób z promieniem R (np. G3 X80 Y40 R20) – bardzo wygodny przy zaokrąglaniu naroży o kącie do 180°, 2) Sposób z wektorem środka I, J (np. G2 X35 Y40 I15 J0) – gdzie I oraz J to odległości w osiach X i Y od punktu POCZĄTKOWEGO łuku do ŚRODKA okręgu.',
-      'Ważna zasada: za pomocą parametru R nie da się zaprogramować pełnego okręgu 360° (bo punkt startowy i końcowy są w tym samym miejscu, więc okrąg mógłby leżeć z dowolnej strony). Pełny okrąg programujemy za pomocą I oraz J!',
+      '1. INTERPOLACJA KOŁOWA: G2 (ZGODNIE Z ZEGAREM) I G3 (PRZECIWNIE DO ZEGARA)\nCzęści mechaniczne rzadko mają wyłącznie ostre naroża. Do jazdy po łuku kołowym służą dwa polecenia:\n• **G2** (Clockwise – CW): ruch po łuku zgodnie ze wskazówkami zegara.\n• **G3** (Counter-Clockwise – CCW): ruch po łuku przeciwnie do wskazówek zegara (patrząc z góry na stół w płaszczyźnie G17).',
+      '2. DWA SPOSOBY OPISU ŁUKU: PROMIEŃ R ALBO WEKTORY ŚRODKA I, J\nW bloku `G2` lub `G3` zawsze podajemy współrzędne punktu KOŃCOWEGO łuku (`X`, `Y`) oraz informację o jego krzywiźnie na jeden z dwóch sposobów:\n• **Zapis promieniowy `R`** (np. `G3 X80 Y40 R20`): najwygodniejszy przy zaokrąglaniu naroży o kącie do 180°.\n• **Zapis wektorowy `I, J`** (np. `G3 X80 Y40 I0 J20`): gdzie `I` (wzdłuż X) oraz `J` (wzdłuż Y) to przyrostowe odległości od punktu POCZĄTKOWEGO łuku do ŚRODKA okręgu!',
+      '3. KIEDY MUSIMY UŻYĆ I ORAZ J ZAMIAST R?\nZa pomocą parametru `R` nie da się zaprogramować pełnego okręgu 360° (ponieważ punkt startowy i końcowy są w tym samym miejscu, więc okrąg mógłby leżeć z dowolnej strony). Pełny okrąg 360° programujemy zawsze za pomocą wektorów `I` oraz `J`!',
     ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'G2', meaningPl: 'Ruch po łuku zgodnie z ruchem wskazówek zegara (CW)', examplePl: 'G2 X80 Y40 R20' },
+      { codeOrSymbol: 'G3', meaningPl: 'Ruch po łuku przeciwnie do wskazówek zegara (CCW)', examplePl: 'G3 X80 Y40 R20' },
+      { codeOrSymbol: 'R...', meaningPl: 'Promień łuku w milimetrach (dla łuków do 180°)', examplePl: 'R20 = łuk o promieniu 20 mm' },
+      { codeOrSymbol: 'I... J...', meaningPl: 'Odległość w X (I) oraz w Y (J) od punktu startu łuku do środka okręgu', examplePl: 'I0 J20 = środek 20 mm powyżej punktu startu' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Rozbiór bloku interpolacji łukowej G3:',
+      lineCode: 'G3 X80 Y40 R20',
+      parts: [
+        { token: 'G3', explanationPl: 'Łuk przeciwnie do ruchu wskazówek zegara (CCW)' },
+        { token: 'X80 Y40', explanationPl: 'Współrzędne punktu KOŃCOWEGO łuku' },
+        { token: 'R20', explanationPl: 'Promień łuku równy 20 mm (równoważnie: I0 J20 ze startu X60 Y20)' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'Narzędzie stoi na końcu dolnego odcinka w punkcie `X60 Y20` na głębokości `Z-4`.',
+      'Pomiędzy linią `G1 X60 Y20 F350` a linią `G1 X80 Y60` dopisz blok łuku przeciwnie do zegara: `G3 X80 Y40 R20` (lub `G3 X80 Y40 I0 J20`).',
+      'Zwróć uwagę, że w kolejnej linii (`G1 X80 Y60`) wracamy do `G1`, bo `G3` również jest kodem modalnym!',
+      'Kliknij „✔ Sprawdź zadanie”.',
+    ],
+    commonMistakeWarningPl:
+      'Po zakończeniu łuku `G2` lub `G3` koniecznie wpisz ponownie `G1` (lub `G0`) w kolejnej linii prostoliniowej! Jeśli o tym zapomnisz, sterownik spróbuje wykonać kolejny odcinek prosty jako łuk i zgłosi błąd promienia.',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: {
@@ -585,10 +608,31 @@ M30`,
     titlePl: 'Lekcja 1.7: Tryby G90 (bezwzględny) i G91 (przyrostowy)',
     shortSubtitlePl: 'Kiedy wygodniej podawać odległość od ostatniego punktu zamiast od zera detalu',
     theoryParagraphsPl: [
-      'Do tej pory pracowaliśmy w trybie G90 (Absolute Positioning – wymiarowanie bezwzględne), w którym każda współrzędna X, Y, Z oznacza pozycję liczoną od stałego punktu zerowego przedmiotu (0, 0, 0).',
-      'Czasami jednak na rysunku wymiary podane są „łańcuchowo” (od jednego otworu lub narożnika do następnego, np. „przesuń o +20 mm w prawo i +15 mm w górę”). Wtedy możemy przełączyć sterownik w tryb G91 (Incremental Positioning – wymiarowanie przyrostowe). W trybie G91 wpisanie „G1 X20 Y15” oznacza: „przesuń narzędzie o 20 mm w X oraz o 15 mm w Y względem miejsca, w którym teraz stoisz”.',
-      'Zasada bezpieczeństwa: po zakończeniu sekcji przyrostowej G91 zawsze jak najszybciej wróć do trybu bezwzględnego G90 przed wykonaniem odjazdu w osi Z (np. G90 G0 Z20), aby przypadkiem nie pomylić wysokości!',
+      '1. TRYB BEZWZGLĘDNY G90 (ABSOLUTE POSITIONING)\nDo tej pory pracowaliśmy w trybie `G90` (wymiarowanie bezwzględne), w którym każda współrzędna `X, Y, Z` oznacza pozycję liczoną od stałego punktu zerowego przedmiotu `(0, 0, 0)`.',
+      '2. TRYB PRZYROSTOWY G91 (INCREMENTAL POSITIONING)\nCzasami na rysunku wymiary podane są „łańcuchowo” (od jednego narożnika do następnego, np. „przesuń o +20 mm w prawo i +15 mm w górę”). Wtedy możemy przełączyć sterownik w tryb `G91`. W trybie `G91` wpisanie `G1 X20 Y15` oznacza: „przesuń narzędzie o 20 mm w X oraz o 15 mm w Y względem miejsca, w którym teraz stoisz”.',
+      '3. ZASADA BEZPIECZEŃSTWA PO WYJŚCIU Z G91\nPo zakończeniu sekcji przyrostowej `G91` zawsze jak najszybciej wróć do trybu bezwzględnego `G90` przed wykonaniem odjazdu w osi Z (np. `G90 G0 Z20`), aby przypadkiem nie pomylić wysokości!',
     ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'G90', meaningPl: 'Wymiarowanie bezwzględne (współrzędne liczone od zera detalu G54)', examplePl: 'G90 G0 X20 Y20' },
+      { codeOrSymbol: 'G91', meaningPl: 'Wymiarowanie przyrostowe (przesunięcie liczone od aktualnej pozycji narzędzia)', examplePl: 'G91 G1 X20 Y0 (przesuń o +20 mm w X)' },
+      { codeOrSymbol: 'G90 G0 Z20', meaningPl: 'Bezpieczny powrót do trybu bezwzględnego i wyjazd na Z = 20 mm', examplePl: 'Stosowany zawsze po zakończeniu sekwencji G91' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Rozbiór ruchu przyrostowego G91:',
+      lineCode: 'G91 G1 X20 Y15 F350',
+      parts: [
+        { token: 'G91', explanationPl: 'Tryb przyrostowy (licz od bieżącego miejsca)' },
+        { token: 'X20 Y15', explanationPl: 'Przesuń o +20 mm w prawo i +15 mm w głąb względem aktualnej pozycji' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'W kodzie startowym narzędzie w trybie `G91` dotarło już do punktu `(X60, Y35)`.',
+      'Dopisz ruch o `+15 mm` w osi Y: `G1 X0 Y15` (dotrzesz do `X60 Y50`).',
+      'Następnie dopisz ruch o `+20 mm` w osi X: `G1 X20 Y0` (dotrzesz do `X80 Y50`).',
+      'Na końcu przywróć tryb bezwzględny i wyjedź w górę: `G90 G0 Z20`.',
+    ],
+    commonMistakeWarningPl:
+      'Pozostawienie aktywnego `G91` pod koniec programu to klasyczna pułapka: jeśli w trybie `G91` wpiszesz `G0 Z-2`, a potem powtórzysz cykl w pętli, narzędzie za każdym razem będzie zjeżdżać o kolejne 2 mm głębiej!',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: {
@@ -689,10 +733,30 @@ M30`,
     titlePl: 'Lekcja 1.8: Punkty zerowe przedmiotu G54–G59',
     shortSubtitlePl: 'Jak używać wielu baz współrzędnych zapisanych w tabeli sterownika',
     theoryParagraphsPl: [
-      'Skąd maszyna wie, w którym miejscu na dużym stole frezarki zamocowaliśmy nasze imadło z detalem? Przed uruchomieniem programu operator mierzy sondą położenie narożnika detalu i wpisuje je do tabeli punktów zerowych w sterowniku pod kodami od G54 do G59 (zajrzyj do karty „🛠 Tabele T / H / D / G54”!).',
-      'Standardowo pierwsza sztuka korzysta z bazy G54. Jeśli na stole zamocujemy dwa imadła obok siebie (np. pierwsze w G54, a drugie przesunięte o 130 mm w prawo w G55), możemy wykonać ten sam ruch w G54, a następnie wpisać G55 i powtórzyć dokładnie te same współrzędne!',
-      'Samo wpisanie G55 nie powoduje jeszcze ruchu osi maszyny – przełącza jedynie układ odniesienia dla wszystkich kolejnych współrzędnych X, Y, Z.',
+      '1. SKĄD MASZYNA WIE, GDZIE LEŻY DETAL? (TABELA G54–G59)\nPrzed uruchomieniem programu operator mierzy sondą położenie narożnika detalu i wpisuje je do tabeli punktów zerowych w sterowniku pod kodami od `G54` do `G59` (zajrzyj do karty „🛠 Tabele T / H / D / G54”!).',
+      '2. PRACA NA WIELU IMADŁACH JEDNOCZEŚNIE\nStandardowo pierwsza sztuka korzysta z bazy `G54`. Jeśli na stole zamocujemy dwa imadła obok siebie (np. pierwsze w `G54`, a drugie przesunięte w prawo w `G55`), możemy wykonać obróbkę w `G54`, a następnie wpisać `G55` i powtórzyć dokładnie te same współrzędne na drugiej sztuce!',
+      '3. CO ROBI SAMO WPISANIE G55?\nSamo wpisanie `G55` nie powoduje jeszcze fizycznego ruchu osi maszyny – przełącza jedynie układ odniesienia dla wszystkich kolejnych współrzędnych `X, Y, Z`.',
     ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'G54', meaningPl: 'Pierwszy (podstawowy) układ współrzędnych przedmiotu obrabianego (WCS #1)', examplePl: 'G54 (domyślna baza w 90% programów)' },
+      { codeOrSymbol: 'G55', meaningPl: 'Drugi układ współrzędnych przedmiotu (np. drugie imadło na stole)', examplePl: 'G55 G0 X30 Y40 Z5' },
+      { codeOrSymbol: 'G56–G59', meaningPl: 'Kolejne bazy przedmiotowe od #3 do #6 w tabeli sterownika', examplePl: 'Stosowane przy obróbce wielostanowiskowej' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Przełączenie bazy na drugie imadło (G55):',
+      lineCode: 'G55 G0 X30 Y40 Z5',
+      parts: [
+        { token: 'G55', explanationPl: 'Aktywuj drugi punkt zerowy przedmiotu z tabeli offsetów' },
+        { token: 'G0 X30 Y40 Z5', explanationPl: 'Dojedź do punktu (30, 40, 5) liczonego już od narożnika drugiego detalu (G55)!' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'Zauważ, że pierwsza operacja w bazie `G54` kończy się bezpiecznym odjazdem `G0 Z20`.',
+      'Pod komentarzem zadania wpisz w nowej linii `G55`.',
+      'W kolejnej linii wpisz `G0 X30 Y40 Z5` i kliknij „✔ Sprawdź zadanie”.',
+    ],
+    commonMistakeWarningPl:
+      'Zawsze odjedź narzędziem wysoko w osi Z (`G0 Z20`) PRZED przełączeniem z `G54` na `G55` i ruchem w XY – inaczej frez przejedzie do drugiego imadła na wysokości obróbki, uderzając w szczęki!',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: {
@@ -784,10 +848,30 @@ M30`,
     titlePl: 'Lekcja 1.9: Narzędzia – tabela narzędzi, wybór T i wymiana M6',
     shortSubtitlePl: 'Jak zamontować i wymienić narzędzie w magazynie frezarki',
     theoryParagraphsPl: [
-      'Frezarka CNC posiada magazyn narzędziowy (Tool Magazine), w którym czeka kilka różnych narzędzi. W naszej maszynie (sprawdź kartę „🛠 Tabele T / H / D / G54”) mamy: T1 (Frez walcowy Ø10 mm), T2 (Frez fazujący Ø8 mm), T3 (Wiertło kręte Ø6 mm) oraz T4 (Frez walcowy Ø6 mm).',
-      'Samo wpisanie „T2” jedynie obraca magazyn i przygotowuje narzędzie nr 2 do wymiany. Dopiero komenda M6 (Tool Change) wykonuje fizyczną wymianę narzędzia we wrzecionie! Najczęściej zapisujemy je razem w jednym bloku: „T2 M6”.',
-      'Zawsze przed wymianą narzędzia M6 upewnij się, że poprzednie narzędzie wyjechało bezpiecznie w górę nad detal (np. G0 Z30), a po wymianie uruchom obroty S... M3 i włącz korekcję długości dla nowego narzędzia (np. G43 H2).',
+      '1. MAGAZYN NARZĘDZIOWY (TOOL MAGAZINE)\nFrezarka CNC posiada magazyn narzędziowy, w którym czeka kilka różnych narzędzi. W naszej maszynie (sprawdź kartę „🛠 Tabele T / H / D / G54”) mamy:\n• `T1`: Frez walcowo-czołowy Ø10 mm (długość H1 = 50 mm),\n• `T2`: Frez fazujący stożkowy Ø8 mm 90° (długość H2 = 45 mm),\n• `T3`: Wiertło kręte Ø6 mm (długość H3 = 60 mm),\n• `T4`: Frez walcowo-czołowy Ø6 mm (długość H4 = 40 mm).',
+      '2. RÓŻNICA MIĘDZY SŁOWEM T A ROZKAZEM M6\nSamo wpisanie `T2` jedynie obraca karuzelę magazynu i przygotowuje narzędzie nr 2 do wymiany. Dopiero komenda `M6` (Tool Change) wykonuje fizyczną wymianę narzędzia we wrzecionie! Najczęściej zapisujemy je razem w jednym bloku: `T2 M6`.',
+      '3. PROCEDURA BEZPIECZNEJ WYMIANY NARZĘDZIA\nZawsze przed wymianą narzędzia `M6` upewnij się, że poprzednie narzędzie wyjechało bezpiecznie w górę nad detal (`G0 Z30`), a po wymianie uruchom obroty `S... M3` i włącz korekcję długości dla nowego narzędzia (`G43 H2`).',
     ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'T1..T4', meaningPl: 'Wybór numeru gniazda narzędzia w magazynie', examplePl: 'T2 = wybierz narzędzie nr 2' },
+      { codeOrSymbol: 'M6', meaningPl: 'Fizyczna wymiana narzędzia we wrzecionie (Tool Change)', examplePl: 'T2 M6 = zamontuj narzędzie T2 we wrzecionie' },
+      { codeOrSymbol: 'G43 H2', meaningPl: 'Włączenie korekcji długości dla narzędzia T2', examplePl: 'G43 H2 Z20' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Sekwencja wymiany narzędzia na T2:',
+      lineCode: 'T2 M6',
+      parts: [
+        { token: 'T2', explanationPl: 'Wskaż narzędzie nr 2 (Frez fazujący Ø8 mm) w magazynie' },
+        { token: 'M6', explanationPl: 'Wykonaj wymianę narzędzia we wrzecionie' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'Po zakończeniu pracy narzędziem `T1` i odjeździe `G0 Z30` dopisz linię wymiany: `T2 M6`.',
+      'W kolejnych liniach włącz obroty i korekcję długości dla T2: `S3500 M3` oraz `G43 H2 Z20`.',
+      'Dojedź nad punkt nawiercenia fazy `G0 X50 Y20 Z5`, zjedź roboczo `G1 Z-3 F200` i wyjedź `G0 Z25`.',
+    ],
+    commonMistakeWarningPl:
+      'Wpisanie samego `T2` bez `M6` to bardzo częsty błąd: program jedzie dalej starym narzędziem `T1`, które nadal tkwi we wrzecionie!',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: {
@@ -882,10 +966,31 @@ M30`,
     titlePl: 'Lekcja 1.10: Korekcja długości narzędzia – G43 i rejestr H',
     shortSubtitlePl: 'Dlaczego bez G43 H.. wrzeciono uderzy w detal i dlaczego numer H musi pasować do T',
     theoryParagraphsPl: [
-      'Każde narzędzie zamocowane w oprawce wystaje z wrzeciona na inną długość fizyczną (np. nasze T1 ma długość 50 mm, T2 ma 45 mm, a długie wiertło T3 aż 60 mm). Bez włączonej korekcji długości (stan G49) sterownik traktuje współrzędną Z jako położenie CZOŁA WRZECIONA (Spindle Gauge Line). Gdybyś bez korekcji napisała/napisał G0 Z10, czoło wrzeciona zjechałoby na Z10, więc czubek 50-milimetrowego frezu T1 wbiłby się na Z = -40 mm, niszcząc detal i imadło!',
-      'Polecenie G43 H1 włącza dodatnią korekcję długości i pobiera z rejestru H1 w sterowniku zmierzoną długość narzędzia (50 mm). Dzięki temu sterownik podnosi wrzeciono o 50 mm wyżej i wierzchołek narzędzia (Tool Tip Center) trafia dokładnie w zaprogramowane Z!',
-      'Złota zasada operatora: numer rejestru H musi zawsze odpowiadać numerowi narzędzia T! Dla T1 używamy G43 H1, dla T2 używamy G43 H2, a dla T3 używamy G43 H3.',
+      '1. DLACZEGO KAŻDE NARZĘDZIE WYSTAJE NA INNĄ DŁUGOŚĆ?\nKażde narzędzie zamocowane w oprawce wystaje z wrzeciona na inną długość fizyczną (nasze `T1` ma `50 mm`, `T2` ma `45 mm`, a długie wiertło `T3` aż `60 mm`). Bez włączonej korekcji długości (stan `G49`) sterownik traktuje współrzędną Z jako położenie CZOŁA WRZECIONA (Spindle Gauge Line). Gdybyś bez korekcji napisał `G0 Z10`, czoło wrzeciona zjechałoby na `Z10`, więc czubek 60-milimetrowego wiertła `T3` wbiłby się na `Z = -50 mm`, niszcząc detal i imadło!',
+      '2. JAK DZIAŁA G43 H..?\nPolecenie `G43 H3` włącza dodatnią korekcję długości i pobiera z rejestru `H3` w sterowniku zmierzoną długość narzędzia `T3` (`60 mm`). Dzięki temu sterownik podnosi wrzeciono o 60 mm wyżej i wierzchołek wiertła (Tool Tip Center) trafia dokładnie w zaprogramowane Z!',
+      '3. ZŁOTA ZASADA: NUMER T MUSI RÓWNAĆ SIĘ NUMEROWI H\nDla `T1` używamy `G43 H1`, dla `T2` używamy `G43 H2`, a dla `T3` używamy `G43 H3`.',
     ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'G43 H...', meaningPl: 'Włączenie dodatniej korekcji długości narzędzia z rejestru H', examplePl: 'G43 H3 G0 Z10' },
+      { codeOrSymbol: 'G49', meaningPl: 'Odwołanie korekcji długości (maszyna pozycjonuje samo czoło wrzeciona!)', examplePl: 'Nigdy nie zbliżaj się do detalu z aktywnym G49!' },
+      { codeOrSymbol: 'T3 -> H3', meaningPl: 'Zgodność numeru narzędzia T z numerem rejestru wysokości H', examplePl: 'T3 M6 ... G43 H3' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Bezpieczny dojazd z aktywacją korekcji długości G43 H3:',
+      lineCode: 'G43 H3 G0 X50 Y40 Z10',
+      parts: [
+        { token: 'G43', explanationPl: 'Włącz kompensację długości narzędzia' },
+        { token: 'H3', explanationPl: 'Pobierz długość z rejestru nr 3 (60 mm dla wiertła T3)' },
+        { token: 'G0 X50 Y40 Z10', explanationPl: 'Ustaw czubek wiertła bezpiecznie 10 mm nad płytką' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'Zwróć uwagę na czerwoną kolizję w oknie 3D spowodowaną przez `G49 G0 X50 Y40 Z10`.',
+      'W tej linii zamień słowo `G49` na `G43 H3` (ponieważ pracujemy wiertłem `T3`).',
+      'Kliknij „✔ Sprawdź zadanie” i zobacz, że wiertło zatrzymuje się na `Z10` i wierci otwór na `Z-10`.',
+    ],
+    commonMistakeWarningPl:
+      'Wpisanie `T3 M6`, a pod spodem zostawienie `G43 H1` (skopiowanego z pierwszego narzędzia) to najczęstsza przyczyna ciężkich kolizji na frezarkach CNC!',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: STRICT_VALIDATION_POLICY,
@@ -963,10 +1068,31 @@ M30`,
     titlePl: 'Lekcja 1.11: Korekcja promienia narzędzia – G41 (lewo), G42 (prawo), G40',
     shortSubtitlePl: 'Jak programować wymiary wprost z rysunku i pozwolić maszynie odsunąć frez o promień D',
     theoryParagraphsPl: [
-      'Nasz frez T1 ma średnicę Ø10 mm, czyli promień 5 mm. Gdyby środek frezu pojechał dokładnie po krawędzi wymiaru z rysunku, bok frezu zebrałby o 5 mm materiału za dużo! Zamiast ręcznie przeliczać wszystkie współrzędne na kartce, używamy korekcji promienia narzędzia (Cutter Radius Compensation):',
-      '• G41 D1 – odsuwa narzędzie w LEWO od zaprogramowanego kierunku ruchu o promień z rejestru D1 (5 mm). Gdy okrążamy zewnętrzny kontur kostki zgodnie ze wskazówkami zegara, lewa strona to właśnie strona zewnętrzna!\n• G42 D1 – odsuwa narzędzie w PRAWO od kierunku ruchu.\n• G40 – odwołuje korekcję promienia.',
-      'Ważna reguła sterowników CNC: włączenie korekcji (G41/G42) oraz jej odwołanie (G40) musi nastąpić na prostoliniowym odcinku dojazdowym G1 (nie wolno włączać G41 w ruchu szybkim G0 ani w łuku G2/G3!). Na ekranie 3D zielona przerywana linia pokaże zaprogramowany kontur, a niebieska – odsuniętą ścieżkę środka frezu.',
+      '1. PO CO NAM KOREKCJA PROMIENIA NARZĘDZIA (G41 / G42)?\nNasz frez `T1` ma średnicę `Ø10 mm`, czyli promień `R = 5 mm`. Gdyby środek frezu pojechał dokładnie po krawędzi wymiaru z rysunku, bok frezu zebrałby o 5 mm materiału za dużo! Zamiast ręcznie przeliczać wszystkie współrzędne na kartce, używamy korekcji promienia narzędzia (Cutter Radius Compensation).',
+      '2. KODY G41 (LEWO), G42 (PRAWO) ORAZ G40 (ODWOŁANIE)\n• **G41 D1**: odsuwa narzędzie w **LEWO** od zaprogramowanego kierunku ruchu o promień z rejestru `D1` (`5 mm`). Gdy okrążamy zewnętrzny kontur kostki zgodnie ze wskazówkami zegara, lewa strona to właśnie strona zewnętrzna!\n• **G42 D1**: odsuwa narzędzie w **PRAWO** od kierunku ruchu.\n• **G40**: odwołuje korekcję promienia.',
+      '3. ODCINEK DOJAZDOWY I WYJAZDOWY W RUCHU G1\nWłączenie korekcji (`G41`/`G42`) oraz jej odwołanie (`G40`) musi nastąpić na prostoliniowym odcinku dojazdowym `G1` (nie wolno włączać `G41` w ruchu szybkim `G0` ani w łuku `G2`/`G3`!). Na ekranie 3D zielona przerywana linia pokaże zaprogramowany kontur, a niebieska – odsuniętą ścieżkę środka frezu.',
     ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'G41 D...', meaningPl: 'Korekcja promienia narzędzia LEWOSTRONNA (patrząc w kierunku ruchu)', examplePl: 'G1 G41 D1 X20 Y20 F350' },
+      { codeOrSymbol: 'G42 D...', meaningPl: 'Korekcja promienia narzędzia PRAWOSTRONNA (patrząc w kierunku ruchu)', examplePl: 'G1 G42 D1 X20 Y20 F350' },
+      { codeOrSymbol: 'G40', meaningPl: 'Odwołanie korekcji promienia (powrót środka frezu na linię programu)', examplePl: 'G1 G40 X5 Y5' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Włączenie korekcji lewostronnej na odcinku dojazdowym G1:',
+      lineCode: 'G1 G41 D1 X20 Y20 F350',
+      parts: [
+        { token: 'G1', explanationPl: 'Prostoliniowy odcinek dojazdowy (Lead-in)' },
+        { token: 'G41 D1', explanationPl: 'Odsuń oś frezu w lewo o promień z rejestru D1 (5 mm)' },
+        { token: 'X20 Y20 F350', explanationPl: 'Punkt narożnika konturu i posuw skrawania' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'Znajdź w edytorze linię dojazdową `G1 X20 Y20 F350`.',
+      'Dopisz w niej `G41 D1`, aby otrzymać: `G1 G41 D1 X20 Y20 F350`.',
+      'Przełącz kamerę na „Góra (XY)” i zobacz zielony kontur oraz odsuniętą o 5 mm niebieską ścieżkę środka frezu!',
+    ],
+    commonMistakeWarningPl:
+      'Próba włączenia `G41` w ruchu szybkim `G0` lub zapomnienie o wyłączeniu `G40` przed podniesieniem osi Z wywoła alarm sterownika!',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: STRICT_VALIDATION_POLICY,
@@ -1063,10 +1189,31 @@ M30`,
     titlePl: 'Lekcja 1.12: Wiercenie – cykle stałe G81, G82, G83 z G98/G99 i odwołanie G80',
     shortSubtitlePl: 'Szybkie wiercenie serii otworów bez pisania dziesiątek linii G0/G1',
     theoryParagraphsPl: [
-      'Gdy mamy do wywiercenia 10 otworów, pisanie dla każdego z osobna dojazdu G0, wiercenia G1 i wycofania G0 byłoby żmudne. Dlatego sterowniki CNC mają wbudowane cykle wiertarskie (Canned Cycles):\n• G81 – wiercenie zwykłe (wjazd w dół na Z i natychmiastowy wyjazd w górę),\n• G82 – wiercenie z postojem czasowym P na dnie (wygładza dno otworu),\n• G83 – wiercenie głębokie skokowe (Peck Drilling): wiertło wchodzi skokami co Q milimetrów i za każdym razem wycofuje się do góry, żeby wyrzucić wióry z otworu!',
-      'W wywołaniu cyklu podajemy: X, Y (środek pierwszego otworu), Z (dno otworu, np. Z-15), R (płaszczyznę bezpiecznego zbliżenia nad materiałem, np. R2), Q (skok dla G83, np. Q5) oraz F (posuw wiercenia). Kody G98 (powrót do początkowego Z) i G99 (powrót do poziomu R) sterują wysokością przejazdu między otworami.',
-      'Największa zaleta: cykl jest modalny! W kolejnych liniach wpisujesz TYLKO współrzędne kolejnych otworów (np. „X50 Y40”, „X80 Y40”), a maszyna sama wierci otwór w każdym punkcie! Po ostatnim otworze odwołujemy cykl kodem G80.',
+      '1. PO CO STOSUJEMY CYKLE STAŁE WIERCENIA (CANNED CYCLES)?\nGdy mamy do wywiercenia 10 otworów, pisanie dla każdego z osobna dojazdu `G0`, wiercenia `G1` i wycofania `G0` byłoby żmudne. Dlatego sterowniki CNC mają wbudowane cykle wiertarskie:\n• **G81**: wiercenie zwykłe (wjazd w dół na Z i natychmiastowy wyjazd w górę),\n• **G82**: wiercenie z postojem czasowym `P` na dnie (wygładza dno otworu),\n• **G83**: wiercenie głębokie skokowe (Peck Drilling): wiertło wchodzi skokami co `Q` milimetrów i za każdym razem wycofuje się do góry, żeby wyrzucić wióry z otworu!',
+      '2. PARAMETRY CYKLU (X, Y, Z, R, Q, F) ORAZ G98 / G99\nW wywołaniu cyklu podajemy: `X, Y` (środek pierwszego otworu), `Z` (dno otworu, np. `Z-15`), `R` (płaszczyznę bezpiecznego zbliżenia nad materiałem, np. `R2`), `Q` (skok dla `G83`, np. `Q5`) oraz `F` (posuw wiercenia). Kody `G98` (powrót do początkowego Z) i `G99` (powrót do poziomu R) sterują wysokością przejazdu między otworami.',
+      '3. MODALNOŚĆ CYKLU I ODWOŁANIE G80\nCykl jest modalny! W kolejnych liniach wpisujesz TYLKO współrzędne kolejnych otworów (np. `X50 Y40`, `X80 Y40`), a maszyna sama wierci otwór w każdym punkcie! Po ostatnim otworze obowiązkowo odwołujemy cykl kodem `G80`.',
     ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'G81 / G82 / G83', meaningPl: 'Cykle stałe wiercenia: zwykłe (G81), z postojem P (G82), głębokie skokowe co Q (G83)', examplePl: 'G98 G83 X20 Y40 Z-15 R2 Q5 F160' },
+      { codeOrSymbol: 'G98 / G99', meaningPl: 'Wysokość wycofania między otworami: do Z początkowego (G98) lub do płaszczyzny R (G99)', examplePl: 'G98 = bezpiecznie wysoko nad łapami dociskowymi' },
+      { codeOrSymbol: 'G80', meaningPl: 'Odwołanie (zakończenie) aktywnego cyklu wiertarskiego', examplePl: 'G80 (zawsze po ostatnim otworze!)' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Rozbiór cyklu wiercenia głębokiego G83:',
+      lineCode: 'G98 G83 X20 Y40 Z-15 R2 Q5 F160',
+      parts: [
+        { token: 'G98 G83', explanationPl: 'Powrót do Z początkowego + cykl wiercenia skokowego' },
+        { token: 'X20 Y40 Z-15', explanationPl: 'Pozycja pierwszego otworu i głębokość dna Z = -15 mm' },
+        { token: 'R2 Q5 F160', explanationPl: 'Poziom zbliżenia R = 2 mm, skok łamania wióra Q = 5 mm, posuw F = 160 mm/min' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'Pod linią `G98 G83 X20 Y40 Z-15 R2 Q5 F160` dopisz współrzędne drugiego otworu: `X50 Y40`.',
+      'W kolejnej linii (przed `G80`) dopisz współrzędne trzeciego otworu: `X80 Y40`.',
+      'Kliknij „✔ Sprawdź zadanie” i obejrzyj skokowe wiercenie wszystkich 3 otworów w 3D!',
+    ],
+    commonMistakeWarningPl:
+      'Jeśli po ostatnim otworze zapomnisz wpisać `G80`, maszyna przy każdym kolejnym ruchu `X` lub `Y` będzie próbowała wywiercić niechciany otwór!',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: STRICT_VALIDATION_POLICY,
@@ -1159,10 +1306,22 @@ M30`,
     titlePl: 'Lekcja 1.13: Program z trzema narzędziami – pełne zadanie końcowe Modułu 1',
     shortSubtitlePl: 'Samodzielne połączenie frezowania (T1), fazowania (T2) oraz wiercenia (T3)',
     theoryParagraphsPl: [
-      'Czas połączyć wszystkie poznane umiejętności w jeden kompletny program produkcyjny! W prawdziwym warsztacie niemal każda część wymaga użycia kilku narzędzi po kolei.',
-      'W tym zadaniu wykonasz kompletną obróbkę płytki za pomocą trzech narzędzi:\n1) Narzędzie T1 (Frez walcowy Ø10 mm, H1): wyfrezuj poziomy kanał od (X25, Y40) do (X75, Y40) na głębokości Z = -5 mm.\n2) Narzędzie T2 (Frez fazujący Ø8 mm, H2): wykonaj nawiercenie pod fazę w dwóch punktach: (X25, Y20) oraz (X75, Y20) na głębokości Z = -3 mm.\n3) Narzędzie T3 (Wiertło Ø6 mm, H3): wywierć w tych samych dwóch punktach (X25, Y20) oraz (X75, Y20) otwory o głębokości Z = -14 mm (np. cyklem G81 lub G83).',
-      'Pamiętaj o schemacie dla każdego narzędzia: bezpieczny odjazd w Z -> T.. M6 -> S.. M3 M8 -> G43 H.. Z20 -> obróbka -> odjazd w Z!',
+      '1. KOMPLETNA TECHNOLOGIA TRZYNARZĘDZIOWA (T1 -> T2 -> T3)\nCzas połączyć poznane umiejętności w jeden program wielonarzędziowy! W prawdziwym warsztacie niemal każda część wymaga użycia kilku narzędzi po kolei.',
+      '2. KOLEJNOŚĆ OPERACJI W TYM ZADANIU\n• **Narzędzie T1** (Frez walcowy Ø10 mm, `H1`): frezuje poziomy kanał od `(X25, Y40)` do `(X75, Y40)` na głębokości `Z = -5 mm`.\n• **Narzędzie T2** (Frez fazujący Ø8 mm, `H2`): wykonuje nawiercenie pod fazę w dwóch punktach `(X25, Y20)` oraz `(X75, Y20)` na głębokości `Z = -3 mm`.\n• **Narzędzie T3** (Wiertło Ø6 mm, `H3`): wierci w tych samych dwóch punktach `(X25, Y20)` oraz `(X75, Y20)` otwory na głębokość `Z = -14 mm`.',
+      '3. STAŁY SCHEMAT BLOKU KAŻDEGO NARZĘDZIA\nBezpieczny odjazd w Z -> `T.. M6` -> `S.. M3 M8` -> `G43 H.. Z20` -> obróbka -> `G80` (jeśli był cykl) -> odjazd `G0 Z30 M9`!',
     ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'T1 M6 ... G43 H1', meaningPl: 'Sekcja 1: Frez walcowy Ø10 mm', examplePl: 'Frezowanie kanału wzdłuż Y40' },
+      { codeOrSymbol: 'T2 M6 ... G43 H2', meaningPl: 'Sekcja 2: Frez fazujący Ø8 mm (90°)', examplePl: 'Nawiercenie wejść pod otwory (Spot Drilling)' },
+      { codeOrSymbol: 'T3 M6 ... G43 H3', meaningPl: 'Sekcja 3: Wiertło kręte Ø6 mm', examplePl: 'G98 G83 X25 Y20 Z-14 R2 Q5 F160' },
+    ],
+    stepByStepGuidePl: [
+      'Na końcu programu dopisz wymianę na trzecie narzędzie i obroty: `T3 M6`, `S2400 M3 M8` oraz `G43 H3 Z20`.',
+      'Uruchom cykl wiercenia głębokiego w pierwszym otworze: `G98 G83 X25 Y20 Z-14 R2 Q5 F160` i w kolejnej linii podaj drugi otwór: `X75 Y20`.',
+      'Odwołaj cykl `G80`, odjedź `G0 Z30 M9` i zakończ program `M5` oraz `M30`.',
+    ],
+    commonMistakeWarningPl:
+      'Zawsze wykonuj nawiercanie nawiertakiem/fazownikiem (`T2`) PRZED wierceniem długim wiertłem krętym (`T3`) – stożkowe zagłębienie centruje wiertło i zapobiega jego ześlizgnięciu na boki!',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: STRICT_VALIDATION_POLICY,
@@ -1282,10 +1441,22 @@ M30`,
     titlePl: 'Lekcja 1.14: Typowe błędy początkujących i jak je znajdować (Debugowanie)',
     shortSubtitlePl: 'Praca krokowa „Następna linia” i naprawa programu z 3 błędami',
     theoryParagraphsPl: [
-      'Nawet doświadczeni programiści CNC popełniają literówki. Dlatego zanim uruchomisz program na maszynie, sprawdzasz go w symulatorze, korzystając z karty „🔍 Diagnostyka” oraz przycisku pracy krokowej „Następna linia ▶”.',
-      'Trzy najgroźniejsze błędy początkujących to:\n1) Zjazd w materiał ruchem szybkim G0 zamiast G1 (błąd RAPID_COLLISION_IN_MATERIAL),\n2) Zapomnienie o włączeniu wrzeciona M3 przed skrawaniem (błąd SPINDLE_OFF_DURING_CUT),\n3) Użycie G1 bez podania posuwu F lub pominięcie korekcji długości G43 H..',
-      'W edytorze poniżej znajduje się uszkodzony program napisany przez początkującą osobę. Zawiera on dokładnie te trzy błędy! Zdiagnozuj je i napraw tak, aby wyfrezować odcinek od (X20, Y50) do (X80, Y50) na głębokości Z = -4 mm bez żadnego błędu.',
+      '1. JAK DIAGNOZOWAĆ BŁĘDY W PROGRAMIE CNC?\nNawet doświadczeni programiści CNC popełniają literówki. Dlatego zanim uruchomisz program na maszynie, sprawdzasz go w symulatorze, korzystając z karty „🔍 Diagnostyka” oraz przycisku pracy krokowej „Następna linia ▶”.',
+      '2. TRZY NAJGROŹNIEJSZE BŁĘDY POCZĄTKUJĄCYCH\n1) Zjazd w materiał ruchem szybkim `G0` zamiast `G1` (błąd `RAPID_COLLISION_IN_MATERIAL`),\n2) Zapomnienie o włączeniu wrzeciona `M3` przed skrawaniem (błąd `SPINDLE_OFF_DURING_CUT`),\n3) Pominięcie korekcji długości `G43 H..` (błąd `MISSING_LENGTH_COMPENSATION`).',
+      '3. ZADANIE DIAGNOSTYCZNE\nW edytorze poniżej znajduje się uszkodzony program zawierający dokładnie te 3 błędy! Zdiagnozuj je i napraw tak, aby wyfrezować odcinek od `(X20, Y50)` do `(X80, Y50)` na głębokości `Z = -4 mm` bez żadnego błędu.',
     ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'SPINDLE_OFF_DURING_CUT', meaningPl: 'Próba skrawania przy nieruchomym wrzecionie (brak S... M3)', examplePl: 'Rozwiązanie: dopisz S3000 M3 po wymianie T1 M6' },
+      { codeOrSymbol: 'MISSING_LENGTH_COMPENSATION', meaningPl: 'Brak aktywnej korekcji długości narzędzia G43 H..', examplePl: 'Rozwiązanie: dopisz G43 H1 Z20 przed zjazdem do detalu' },
+      { codeOrSymbol: 'RAPID_COLLISION_IN_MATERIAL', meaningPl: 'Wjazd w materiał ruchem szybkim G0 zamiast G1', examplePl: 'Rozwiązanie: zamień G0 Z-4 na G1 Z-4 F200' },
+    ],
+    stepByStepGuidePl: [
+      'Otwórz zakładkę „🔍 Diagnostyka” i przeczytaj komunikaty błędów.',
+      'Po linii `T1 M6` dopisz uruchomienie obrotów: `S3000 M3` oraz korekcję wysokości: `G43 H1 Z20`.',
+      'Zamień błędną linię `G0 Z-4` na ruch roboczy z posuwem: `G1 Z-4 F200`, a następnie kliknij „✔ Sprawdź zadanie”.',
+    ],
+    commonMistakeWarningPl:
+      'Nigdy nie ignoruj ostrzeżeń w zakładce „🔍 Diagnostyka” – nawet pojedynczy brak `M3` lub `G43` na prawdziwej maszynie kończy się złamaniem narzędzia w pierwszej sekundzie programu!',
     machineConfig: MILL_3AXIS_MACHINE,
     stock: DEFAULT_MILL_STOCK,
     validationPolicy: STRICT_VALIDATION_POLICY,
@@ -1347,6 +1518,484 @@ M30`,
         ],
         correctOptionIndex: 0,
         explanationPl: 'Tryb krokowy (Single Block / Następna linia) wykonuje po jednym bloku programu naraz, co pozwala operatorowi skontrolować pozycję narzędzia przed wejściem w materiał.',
+      },
+    ],
+  },
+
+  // =========================================================================
+  // LEKCJA 1.15
+  // =========================================================================
+  {
+    id: 'M1_15',
+    moduleId: 'MODULE_1',
+    orderIndex: 15,
+    titlePl: 'Lekcja 1.15: Planowanie powierzchni czołowej „zygzakiem” (Face Milling)',
+    shortSubtitlePl: 'Zbieranie równej warstwy naddatku z powierzchni detalu z zakładką boczną ae (Stepover)',
+    theoryParagraphsPl: [
+      '1. PO CO PLANUJEMY POWIERZCHNIĘ CZOŁOWĄ (FACE MILLING)?\nSurowa kostka ucięta na pile ma nierówną, utlenioną powierzchnię górną. Dlatego pierwszą operacją na frezarce jest zawsze **planowanie powierzchni czołowej** (zebranie cienkiej warstwy np. `1–2 mm` na całej szerokości), aby uzyskać idealnie płaską bazę `Z = 0`.',
+      '2. SZEROKOŚĆ SKRAWANIA ae (STEPOVER) – DLACZEGO PRZEJAZDY MUSZĄ NA SIEBIE NACHODZIĆ?\nNasz frez `T1` ma średnicę `Ø10 mm`. Gdybyśmy robili przejazdy równoległe dokładnie co `10 mm`, pomiędzy ścieżkami zostałyby cienkie grzbiety („grzebienie”) nieskrawanego metalu. Dlatego w przemyśle stosuje się zakładkę boczną `ae = 60%–80%` średnicy frezu (dla frezu `Ø10 mm` przesuwamy się w osi Y co `8 mm`!).',
+      '3. STRATEGIA ZYGZAK (ZIG-ZAG) I ZJAZD POZA MATERIAŁEM\nW planowaniu narzędzie wjeżdża na głębokość `Z-2` poza obrysem lub przy krawędzi, jedzie w prawo (`X85`), przesuwa się o krok boczny w Y (`+8 mm`), wraca w lewo (`X15`), znów przesuwa się w Y (`+8 mm`) i jedzie w prawo (`X85`).',
+    ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'ae (Stepover)', meaningPl: 'Szerokość skrawania (krok boczny między równoległymi przejściami frezu)', examplePl: 'Dla frezu Ø10 mm stosujemy krok boczny 7–8 mm (70–80% D)' },
+      { codeOrSymbol: 'ap (Depth of Cut)', meaningPl: 'Głębokość skrawania w osi Z podczas jednego przejścia', examplePl: 'G1 Z-2 F200 (zebranie warstwy 2 mm)' },
+      { codeOrSymbol: 'Strategia Zig-Zag', meaningPl: 'Frezowanie naprzemienne w prawo (X+) i w lewo (X-) po przesunięciu o krok w Y', examplePl: 'X85 -> Y40 -> X15 -> Y48 -> X85' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Przejście równoległe z krokiem bocznym 8 mm w osi Y:',
+      lineCode: 'G1 Y40 F400',
+      parts: [
+        { token: 'G1 Y40', explanationPl: 'Przesunięcie boczne z Y32 na Y40 (krok ae = 8 mm, czyli 80% średnicy frezu Ø10)' },
+        { token: 'F400', explanationPl: 'Posuw roboczy planowania' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'W kodzie startowym frez wykonał tylko pierwsze przejście wzdłuż `Y32` (od `X15` do `X85` na głębokości `Z-2`).',
+      'Dopisz przesunięcie boczne na środek płytki `G1 Y40 F400` i przejazd powrotny w lewo: `G1 X15 Y40`.',
+      'Następnie dopisz kolejny krok boczny `G1 Y48` i przejazd w prawo: `G1 X85 Y48`, po czym kliknij „✔ Sprawdź zadanie”!',
+    ],
+    commonMistakeWarningPl:
+      'Nigdy nie ustawiaj kroku bocznego `ae` równego 100% średnicy frezu – każde minimalne bicie oprawki zostawi na powierzchni wyczuwalny pod palcem próg!',
+    machineConfig: MILL_3AXIS_MACHINE,
+    stock: DEFAULT_MILL_STOCK,
+    validationPolicy: STRICT_VALIDATION_POLICY,
+    initialActiveToolPocket: 0,
+    starterCode: `(Lekcja 1.15: Planowanie powierzchni czolowej zygzakiem na Z-2)
+G21 G90 G17 G54
+T1 M6
+S3200 M3 M8
+G43 H1 Z20
+
+(Wejscie na Z-2 i pierwsze przejscie wzdluz Y32 od X15 do X85)
+G0 X15 Y32 Z5
+G1 Z-2 F200
+G1 X85 Y32 F400
+
+(ZADANIE: Wykonaj kolejne dwa przejscia zygzakiem co 8 mm w osi Y:)
+(1. Przesun sie na Y40 i przejedz w lewo do X15 Y40)
+(2. Przesun sie na Y48 i przejedz w prawo do X85 Y48)
+
+
+G0 Z20 M9
+M5
+M30`,
+    taskDescriptionPl:
+      'Dokończ planowanie środkowego pasa płytki na głębokości Z = -2 mm strategią zygzak (z krokiem bocznym 8 mm w osi Y): z punktu (X85, Y32) przejdź na Y40 i przefrezuj pas do (X15, Y40), a następnie przejdź na Y48 i przefrezuj pas do (X85, Y48).',
+    assertions: [
+      {
+        kind: 'NO_ERRORS_AND_NO_COLLISIONS',
+        descriptionPl: 'Planowanie wykonane bez błędów i kolizji',
+      },
+      {
+        kind: 'SURFACE_HEIGHT_AT_POINT',
+        pointXY: { x: 50, y: 40 },
+        expectedZMm: -2,
+        toleranceMm: 0.5,
+        descriptionPl: 'Środek płytki (X50 Y40) został splanowany na wysokość Z = -2 mm',
+      },
+      {
+        kind: 'SURFACE_HEIGHT_AT_POINT',
+        pointXY: { x: 50, y: 48 },
+        expectedZMm: -2,
+        toleranceMm: 0.5,
+        descriptionPl: 'Trzeci pas (X50 Y48) został splanowany na wysokość Z = -2 mm',
+      },
+      {
+        kind: 'MINIMUM_REMOVED_VOLUME',
+        minVolumeMm3: 3000,
+        descriptionPl: 'Zebrano co najmniej 3000 mm³ materiału podczas planowania trzech pasów',
+      },
+    ],
+    hintsPl: [
+      'Podpowiedź 1/3: Stoisz w X85 Y32 na Z-2. Najpierw przesuń się na drugi pas: G1 Y40 F400, a potem jedź w lewo: G1 X15 Y40.',
+      'Podpowiedź 2/3: Teraz przesuń się na trzeci pas: G1 Y48, a potem jedź w prawo: G1 X85 Y48.',
+      'Podpowiedź 3/3: Dopisz przed „G0 Z20 M9” cztery linie:\nG1 Y40 F400\nG1 X15 Y40\nG1 Y48\nG1 X85 Y48',
+    ],
+    solutionCode: `G21 G90 G17 G54
+T1 M6
+S3200 M3 M8
+G43 H1 Z20
+G0 X15 Y32 Z5
+G1 Z-2 F200
+G1 X85 Y32 F400
+G1 Y40 F400
+G1 X15 Y40
+G1 Y48
+G1 X85 Y48
+G0 Z20 M9
+M5
+M30`,
+    solutionExplanationPl:
+      'Trzy nakładające się przejścia (na Y32, Y40 i Y48) frezem Ø10 mm tworzą idealnie płaską powierzchnię na głębokości Z = -2 mm bez pozostawiania grzbietów między ścieżkami.',
+    quiz: [
+      {
+        id: 'q_m1_15',
+        questionPl: 'Dlaczego podczas planowania powierzchni frezem Ø10 mm kolejne przejścia równoległe przesuwamy o ok. 7–8 mm zamiast o pełne 10 mm?',
+        optionsPl: [
+          'Aby sąsiednie przejścia nachodziły na siebie (zakładka ae) i nie pozostawiały nieskrawanych grzbietów na powierzchni',
+          'Ponieważ maszyna nie potrafi przesuwać się o liczby dziesiętne',
+          'Aby wydłużyć czas postoju wrzeciona',
+        ],
+        correctOptionIndex: 0,
+        explanationPl: 'Szerokość skrawania ae na poziomie 70–80% średnicy narzędzia gwarantuje gładkie połączenie sąsiednich ścieżek.',
+      },
+    ],
+  },
+
+  // =========================================================================
+  // LEKCJA 1.16
+  // =========================================================================
+  {
+    id: 'M1_16',
+    moduleId: 'MODULE_1',
+    orderIndex: 16,
+    titlePl: 'Lekcja 1.16: Frezowanie kieszeni prostokątnej (Pocket Milling)',
+    shortSubtitlePl: 'Wybieranie materiału od środka na zewnątrz na głębokość Z = -5 mm',
+    theoryParagraphsPl: [
+      '1. CZYM RÓŻNI SIĘ KIESZEŃ (POCKET) OD OBWODU?\nGdy wycinamy sam obwód dużej ramki, w środku zostaje niewycięta „wyspa” metalu! Aby wybrać całą zamkniętą wnękę (kieszeń prostokątną), frez musi najpierw wybrać materiał ze środka, a następnie objechać ścianki boczne kieszeni.',
+      '2. STRATEGIA OD ŚRODKA NA ZEWNĄTRZ (INSIDE-OUT SPIRAL)\nNajbezpieczniejsza metoda wybierania kieszeni polega na zagłębieniu się w pobliżu środka kieszeni (`X50 Y40`), a następnie zataczaniu coraz szerszych pętli prostokątnych aż do docelowego wymiaru ścianek.',
+      '3. ZADANIE PRAKTYCZNE\nW kodzie startowym frez `T1` (`Ø10 mm`) wszedł w środek kieszeni `(X35..X65, Y40)` na głębokość `Z = -5 mm`. Dopisz obwiedniowy objazd poszerzający kieszeń po prostokącie: `(X30, Y32)` -> `(X70, Y32)` -> `(X70, Y48)` -> `(X30, Y48)` -> `(X30, Y32)`!',
+    ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'Pocket Milling', meaningPl: 'Frezowanie kieszeni (wybieranie całego materiału z wnętrza zamkniętego konturu)', examplePl: 'Rozpoczęcie od środka i rozszerzanie pętli na zewnątrz' },
+      { codeOrSymbol: 'Środek -> Obwód', meaningPl: 'Usunięcie rdzenia środkowego zapobiega zakleszczeniu odpadu w kieszeni', examplePl: 'Najpierw przejazd przez Y40, potem pętla Y32..Y48' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Zamknięcie zewnętrznej pętli kieszeni na głębokości Z-5:',
+      lineCode: 'G1 X70 Y48 F380',
+      parts: [
+        { token: 'G1', explanationPl: 'Ruch roboczy na stałej głębokości Z = -5 mm' },
+        { token: 'X70 Y48', explanationPl: 'Prawy górny narożnik ścieżki środka frezu w kieszeni' },
+        { token: 'F380', explanationPl: 'Posuw roboczy przy wybieraniu kieszeni' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'W kodzie startowym frez wybrał już środkowy rdzeń kieszeni od `X30 Y40` do `X70 Y40` na głębokości `Z-5` i przesunął się do narożnika `X70 Y32`.',
+      'Dopisz dolną ściankę kieszeni: `G1 X30 Y32 F380`.',
+      'Dopisz lewą ściankę: `G1 X30 Y48` oraz górną ściankę: `G1 X70 Y48` i zamknij obwód `G1 X70 Y32`.',
+      'Kliknij „✔ Sprawdź zadanie”!',
+    ],
+    commonMistakeWarningPl:
+      'Gdybyś objechał sam obwód dużej kieszeni bez wybrania jej środka, odcięty w środku kawałek metalu zostałby wyrwany przez obracający się frez i złamałby narzędzie!',
+    machineConfig: MILL_3AXIS_MACHINE,
+    stock: DEFAULT_MILL_STOCK,
+    validationPolicy: STRICT_VALIDATION_POLICY,
+    initialActiveToolPocket: 0,
+    starterCode: `(Lekcja 1.16: Frezowanie kieszeni prostokatnej od srodka na zewnatrz na Z-5)
+G21 G90 G17 G54
+T1 M6
+S3200 M3 M8
+G43 H1 Z20
+
+(1. Wybranie srodkowego rdzenia kieszeni wzdluz Y40 na Z-5)
+G0 X30 Y40 Z5
+G1 Z-5 F180
+G1 X70 Y40 F380
+G1 X70 Y32
+
+(2. ZADANIE: Objedz petle zewnetrzna kieszeni na Z-5:)
+(   do X30 Y32 -> do X30 Y48 -> do X70 Y48 -> zamknij w X70 Y32!)
+
+
+G0 Z20 M9
+M5
+M30`,
+    taskDescriptionPl:
+      'Po wybraniu środkowego rdzenia kieszeni (wzdłuż Y40 na głębokości Z = -5 mm) dokończ zewnętrzną pętlę kieszeni prostokątnej, prowadząc frez przez punkty: (X30, Y32) -> (X30, Y48) -> (X70, Y48) -> (X70, Y32).',
+    assertions: [
+      {
+        kind: 'NO_ERRORS_AND_NO_COLLISIONS',
+        descriptionPl: 'Kieszeń wybrana bez błędów i kolizji',
+      },
+      {
+        kind: 'SURFACE_HEIGHT_AT_POINT',
+        pointXY: { x: 50, y: 40 },
+        expectedZMm: -5,
+        toleranceMm: 0.5,
+        descriptionPl: 'Środek kieszeni (X50 Y40) ma dno na Z = -5 mm',
+      },
+      {
+        kind: 'TOOLTIP_VISITED_POINT_WCS',
+        targetWcs: { x: 30, y: 48, z: -5, a: 0, c: 0 },
+        toleranceMm: 0.5,
+        requireCuttingMotion: true,
+        descriptionPl: 'Wybrano lewy górny narożnik kieszeni (X30 Y48 Z-5)',
+      },
+      {
+        kind: 'TOOLTIP_VISITED_POINT_WCS',
+        targetWcs: { x: 70, y: 48, z: -5, a: 0, c: 0 },
+        toleranceMm: 0.5,
+        requireCuttingMotion: true,
+        descriptionPl: 'Wybrano prawy górny narożnik kieszeni (X70 Y48 Z-5)',
+      },
+      {
+        kind: 'MINIMUM_REMOVED_VOLUME',
+        minVolumeMm3: 5000,
+        descriptionPl: 'Usunięto pełną objętość materiału kieszeni (min. 5000 mm³)',
+      },
+    ],
+    hintsPl: [
+      'Podpowiedź 1/3: Narzędzie stoi w prawym dolnym narożniku pętli (X70 Y32 Z-5). Pojedź w lewo: G1 X30 Y32 F380.',
+      'Podpowiedź 2/3: Następnie pojedź w górę: G1 X30 Y48 oraz w prawo: G1 X70 Y48.',
+      'Podpowiedź 3/3: Dopisz przed „G0 Z20 M9” linie:\nG1 X30 Y32 F380\nG1 X30 Y48\nG1 X70 Y48\nG1 X70 Y32',
+    ],
+    solutionCode: `G21 G90 G17 G54
+T1 M6
+S3200 M3 M8
+G43 H1 Z20
+G0 X30 Y40 Z5
+G1 Z-5 F180
+G1 X70 Y40 F380
+G1 X70 Y32
+G1 X30 Y32 F380
+G1 X30 Y48
+G1 X70 Y48
+G1 X70 Y32
+G0 Z20 M9
+M5
+M30`,
+    solutionExplanationPl:
+      'Wybieranie od środka (Y40) na zewnątrz (Y32..Y48) usuwa najpierw rdzeń materiału, a następnie obrabia obwód kieszeni na pełną głębokość Z = -5 mm.',
+    quiz: [
+      {
+        id: 'q_m1_16',
+        questionPl: 'Dlaczego przy frezowaniu zamkniętej kieszeni zaczynamy wybieranie od środka i rozszerzamy ścieżkę ku ściankom zewnętrznym?',
+        optionsPl: [
+          'Aby wyfrezować całą objętość wnęki i nie pozostawić w środku luźnego odciętego rdzenia metalu',
+          'Ponieważ frez nie potrafi skręcać w pobliżu krawędzi płytki',
+          'Aby zmniejszyć prędkość obrotową wrzeciona',
+        ],
+        correctOptionIndex: 0,
+        explanationPl: 'Strategia od środka na zewnątrz (Inside-Out) zamienia cały materiał kieszeni w bezpieczne wióry i chroni narzędzie przed zakleszczeniem odpadu.',
+      },
+    ],
+  },
+
+  // =========================================================================
+  // LEKCJA 1.17
+  // =========================================================================
+  {
+    id: 'M1_17',
+    moduleId: 'MODULE_1',
+    orderIndex: 17,
+    titlePl: 'Lekcja 1.17: Interpolacja śrubowa – wejście po helisie (G3 X.. Y.. I.. J.. Z..)',
+    shortSubtitlePl: 'Jak łagodnie wkręcać się frezem w lity metal po spirali bez pionowego wbijania',
+    theoryParagraphsPl: [
+      '1. DLACZEGO FREZY NIE LUBIĄ PIONOWEGO WBIJANIA (PLUNGING)?\nFrez walcowo-czołowy (End Mill) to nie wiertło! Na samym środku swojego czoła ma znacznie gorsze odprowadzanie wiórów. Pionowe wbijanie się frezem prosto w dół w stal lub twarde aluminium wywołuje ogromny opór i przegrzewa ostrza.',
+      '2. INTERPOLACJA ŚRUBOWA (HELICAL INTERPOLATION – HELISA)\nZamiast wbijać się pionowo, przemysłowi programiści stosują **wejście śrubowe po helisie**: w jednym bloku łączymy pełny okrąg `G3` (lub `G2`) z jednoczesnym zjazdem w osi `Z`, np.:\n`G3 X60 Y40 I-10 J0 Z-4 F250`\nNarzędzie zatacza okrąg wokół punktu `(X50, Y40)` i jednocześnie płynnie schodzi po łagodnej pochylni od `Z0` do `Z-4`!',
+      '3. WYRÓWNANIE DNA PO HELISIE\nPo wkręceniu się helisą na docelową głębokość `Z-4` wykonujemy jeszcze jeden pełny okrąg na stałej wysokości `Z-4` (`G3 X60 Y40 I-10 J0 F350`), aby wyrównać pochyłe dno kieszeni kołowej.',
+    ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'G3 X.. Y.. I.. J.. Z..', meaningPl: 'Interpolacja śrubowa (jednoczesny ruch po okręgu XY i zjazd w osi Z)', examplePl: 'G3 X60 Y40 I-10 J0 Z-4 F250' },
+      { codeOrSymbol: 'Skok helisy (Pitch)', meaningPl: 'Obniżenie w osi Z przypadające na jeden pełny obrót 360°', examplePl: 'Zjazd z Z0 na Z-4 w jednym obrocie = skok 4 mm/obrót' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Rozbiór bloku interpolacji śrubowej (helisy 360°):',
+      lineCode: 'G3 X60 Y40 I-10 J0 Z-4 F250',
+      parts: [
+        { token: 'G3 X60 Y40', explanationPl: 'Pełny obrót CCW wracający do punktu (60, 40) w XY' },
+        { token: 'I-10 J0', explanationPl: 'Środek okręgu leży 10 mm w lewo (w X50 Y40)' },
+        { token: 'Z-4', explanationPl: 'Jednoczesne płynne obniżenie osi Z do -4 mm podczas zataczania okręgu!' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'W kodzie startowym frez dojechał do punktu `(X60, Y40)` i dotknął powierzchni `Z0`.',
+      'Dopisz wejście śrubowe po helisie na głębokość `Z-4`: `G3 X60 Y40 I-10 J0 Z-4 F250`.',
+      'W kolejnej linii dopisz pełny okrąg wyrównujący dno na `Z-4`: `G3 X60 Y40 I-10 J0 F350` i kliknij „✔ Sprawdź zadanie”!',
+    ],
+    commonMistakeWarningPl:
+      'Pamiętaj, że przy pełnym obrocie 360° po helisie musimy użyć wektorów środka `I, J` (nie `R`), ponieważ współrzędne `X, Y` początku i końca obrotu są takie same!',
+    machineConfig: MILL_3AXIS_MACHINE,
+    stock: DEFAULT_MILL_STOCK,
+    validationPolicy: STRICT_VALIDATION_POLICY,
+    initialActiveToolPocket: 0,
+    starterCode: `(Lekcja 1.17: Interpolacja srubowa - wejscie po helisie G3 z osia Z)
+G21 G90 G17 G54
+T1 M6
+S3400 M3 M8
+G43 H1 Z20
+
+(Dojazd do punktu startowego okregu X60 Y40 i zblizenie do powierzchni Z0)
+G0 X60 Y40 Z5
+G1 Z0 F200
+
+(ZADANIE: Wkrec sie po helisie G3 o pelny obrot do X60 Y40 ze srodkiem I-10 J0 na glebokosc Z-4,)
+(a nastepnie wykonaj drugi obrot G3 X60 Y40 I-10 J0 na stalej glebokosci Z-4, aby wyrownac dno!)
+
+
+G1 X50 Y40 F300
+G0 Z20 M9
+M5
+M30`,
+    taskDescriptionPl:
+      'Z punktu (X60, Y40, Z0) wykonaj wejście śrubowe (helisę) przeciwnie do wskazówek zegara (G3) wokół środka (X50, Y40 – czyli z wektorem I-10 J0) schodząc na głębokość Z = -4 mm, a następnie wykonaj pełny okrąg wyrównujący dno na Z = -4 mm.',
+    assertions: [
+      {
+        kind: 'NO_ERRORS_AND_NO_COLLISIONS',
+        descriptionPl: 'Helisa wykonana płynnie bez błędów i kolizji',
+      },
+      {
+        kind: 'USED_ARC_MOTION',
+        direction: 'ARC_CCW',
+        expectedRadiusMm: 10,
+        toleranceMm: 0.5,
+        descriptionPl: 'Użyto ruchu kołowego/śrubowego G3 o promieniu 10 mm',
+      },
+      {
+        kind: 'TOOLTIP_VISITED_POINT_WCS',
+        targetWcs: { x: 40, y: 40, z: -4, a: 0, c: 0 },
+        toleranceMm: 0.5,
+        requireCuttingMotion: true,
+        descriptionPl: 'Wyrównano dno kieszeni kołowej na pełnej głębokości Z = -4 mm (przejście przez X40 Y40 Z-4)',
+      },
+    ],
+    hintsPl: [
+      'Podpowiedź 1/3: Pierwszy obrót schodzi z Z0 na Z-4: wpisz „G3 X60 Y40 I-10 J0 Z-4 F250”.',
+      'Podpowiedź 2/3: Drugi obrót jedzie płasko na Z-4, aby wyrównać dno: wpisz „G3 X60 Y40 I-10 J0 F350”.',
+      'Podpowiedź 3/3: Dopisz przed „G1 X50 Y40 F300” dwie linie:\nG3 X60 Y40 I-10 J0 Z-4 F250\nG3 X60 Y40 I-10 J0 F350',
+    ],
+    solutionCode: `G21 G90 G17 G54
+T1 M6
+S3400 M3 M8
+G43 H1 Z20
+G0 X60 Y40 Z5
+G1 Z0 F200
+G3 X60 Y40 I-10 J0 Z-4 F250
+G3 X60 Y40 I-10 J0 F350
+G1 X50 Y40 F300
+G0 Z20 M9
+M5
+M30`,
+    solutionExplanationPl:
+      'Pierwszy blok G3 z parametrem Z-4 tworzy śrubową rampę wejściową (helisę), a drugi blok G3 na stałej wysokości Z-4 wybiera pochyłą resztkę materiału z dna.',
+    quiz: [
+      {
+        id: 'q_m1_17',
+        questionPl: 'Jaka jest główna zaleta wejścia w materiał po linii śrubowej (helisie G2/G3 z osią Z) w porównaniu z pionowym wbijaniem się frezu?',
+        optionsPl: [
+          'Frez zagłębia się łagodnie pod małym kątem i swobodnie wyrzuca wióry na boki, co drastycznie zmniejsza obciążenie ostrzy',
+          'Pozwala skrawać przy wyłączonym wrzecionie M5',
+          'Zastępuje wymianę narzędzia M6',
+        ],
+        correctOptionIndex: 0,
+        explanationPl: 'Wejście po helisie (Helical Ramping) to podstawowa technika przemysłowa chroniąca czoło frezu przed przegrzaniem i wykruszeniem.',
+      },
+    ],
+  },
+
+  // =========================================================================
+  // LEKCJA 1.18
+  // =========================================================================
+  {
+    id: 'M1_18',
+    moduleId: 'MODULE_1',
+    orderIndex: 18,
+    titlePl: 'Lekcja 1.18: Fazowanie ostrych krawędzi konturu frezem stożkowym T2 (Chamfering)',
+    shortSubtitlePl: 'Jak gratować i ścinać krawędzie na gotowo bezpośrednio na maszynie CNC',
+    theoryParagraphsPl: [
+      '1. DLACZEGO FAZUJEMY KRAWĘDZIE NA MASZYNIE CNC?\nJak pamiętasz z Modułu 0, niewykończona krawędź po frezie walcowym jest ostra jak brzytwa i ma zadziory (Burrs). Zamiast skrobać każdą sztukę ręcznie pilnikiem, używamy **frezu fazującego stożkowego 90° (`T2`)**, który objeżdża krawędź i zostawia idealną, równą fazkę (np. `1.5 × 45°`).',
+      '2. PROWADZENIE STOŻKA PO KRAWĘDZI\nPonieważ frez `T2` ma stożkowy czubek o kącie `90°` (`45°` na stronę), zagłębienie go na `Z = -1.5 mm` wzdłuż krawędzi ścina narożnik pod kątem `45°`!',
+      '3. ZADANIE PRAKTYCZNE\nW edytorze narzędzie `T2` (`G43 H2`) wykonało już fazę wzdłuż dolnej krawędzi od `(X20, Y20)` do `(X80, Y20)` na głębokości `Z = -1.5 mm`. Dopisz fazowanie prawej krawędzi do `(X80, Y60)` oraz górnej krawędzi do `(X20, Y60)`!',
+    ],
+    cheatSheetRows: [
+      { codeOrSymbol: 'T2 (Chamfer Mill 90°)', meaningPl: 'Frez stożkowy do wykonywania faz 45° i gratowania krawędzi', examplePl: 'T2 M6 ... G43 H2' },
+      { codeOrSymbol: 'C1.5 (1.5 × 45°)', meaningPl: 'Faza o szerokości 1.5 mm pod kątem 45°', examplePl: 'G1 Z-1.5 F200' },
+    ],
+    anatomyBreakdown: {
+      titlePl: 'Fazowanie krawędzi frezem stożkowym T2:',
+      lineCode: 'G1 X80 Y60 F450',
+      parts: [
+        { token: 'G1 X80 Y60', explanationPl: 'Przejazd stożkiem T2 wzdłuż prawej krawędzi na głębokości Z = -1.5 mm' },
+        { token: 'F450', explanationPl: 'Wyższy posuw wykańczający zapewniający gładką fazkę bez przypaleń' },
+      ],
+    },
+    stepByStepGuidePl: [
+      'Narzędzie `T2` stoi na końcu dolnej fazy w punkcie `X80 Y20` na głębokości `Z-1.5`.',
+      'Dopisz fazowanie prawej krawędzi w górę: `G1 X80 Y60 F450`.',
+      'Dopisz fazowanie górnej krawędzi w lewo: `G1 X20 Y60` i kliknij „✔ Sprawdź zadanie”!',
+    ],
+    commonMistakeWarningPl:
+      'Przy fazowaniu zawsze upewnij się, że aktywny jest rejestr wysokości `H2` dla frezu fazującego `T2` – pomyłka w osi Z nawet o `1 mm` sprawi, że faza będzie dwa razy szersza niż na rysunku!',
+    machineConfig: MILL_3AXIS_MACHINE,
+    stock: DEFAULT_MILL_STOCK,
+    validationPolicy: STRICT_VALIDATION_POLICY,
+    initialActiveToolPocket: 0,
+    starterCode: `(Lekcja 1.18: Fazowanie ostrych krawedzi konturu frezem stozkowym T2)
+G21 G90 G17 G54
+T2 M6 (Frez fazujacy fi 8 mm 90 stopni)
+S4000 M3 M8
+G43 H2 Z20
+
+(Wejscie na Z-1.5 i fazowanie dolnej krawedzi od X20 Y20 do X80 Y20)
+G0 X20 Y20 Z5
+G1 Z-1.5 F200
+G1 X80 Y20 F450
+
+(ZADANIE: Dokończ fazowanie prawej krawędzi do X80 Y60)
+(oraz górnej krawędzi do X20 Y60 na głębokości Z-1.5!)
+
+
+G0 Z25 M9
+M5
+M30`,
+    taskDescriptionPl:
+      'Używając narzędzia T2 (Frez fazujący 90°, G43 H2) na głębokości Z = -1.5 mm, dokończ fazowanie konturu z punktu (X80, Y20) przez punkt (X80, Y60) do punktu (X20, Y60).',
+    assertions: [
+      {
+        kind: 'NO_ERRORS_AND_NO_COLLISIONS',
+        descriptionPl: 'Fazowanie wykonane bez błędów i kolizji',
+      },
+      {
+        kind: 'USED_TOOL_POCKETS',
+        requiredPockets: [2],
+        requireInOrder: false,
+        descriptionPl: 'Użyto frezu fazującego T2',
+      },
+      {
+        kind: 'TOOLTIP_VISITED_POINT_WCS',
+        targetWcs: { x: 80, y: 60, z: -1.5, a: 0, c: 0 },
+        toleranceMm: 0.5,
+        requireCuttingMotion: true,
+        descriptionPl: 'Sfazowano prawą krawędź do narożnika X80 Y60 na Z = -1.5 mm',
+      },
+      {
+        kind: 'TOOLTIP_VISITED_POINT_WCS',
+        targetWcs: { x: 20, y: 60, z: -1.5, a: 0, c: 0 },
+        toleranceMm: 0.5,
+        requireCuttingMotion: true,
+        descriptionPl: 'Sfazowano górną krawędź do narożnika X20 Y60 na Z = -1.5 mm',
+      },
+    ],
+    hintsPl: [
+      'Podpowiedź 1/3: Stoisz w X80 Y20 na Z-1.5. Pojedź wzdłuż prawej krawędzi: G1 X80 Y60 F450.',
+      'Podpowiedź 2/3: Następnie pojedź wzdłuż górnej krawędzi: G1 X20 Y60.',
+      'Podpowiedź 3/3: Dopisz przed „G0 Z25 M9” dwie linie:\nG1 X80 Y60 F450\nG1 X20 Y60',
+    ],
+    solutionCode: `G21 G90 G17 G54
+T2 M6
+S4000 M3 M8
+G43 H2 Z20
+G0 X20 Y20 Z5
+G1 Z-1.5 F200
+G1 X80 Y20 F450
+G1 X80 Y60 F450
+G1 X20 Y60
+G0 Z25 M9
+M5
+M30`,
+    solutionExplanationPl:
+      'Stożkowy frez fazujący T2 prowadzony na głębokości Z = -1.5 mm ścina ostre krawędzie pod kątem 45°, dzięki czemu detal wychodzi z maszyny bezpieczny i gotowy do montażu.',
+    quiz: [
+      {
+        id: 'q_m1_18',
+        questionPl: 'Dlaczego szerokość fazy wykonywanej frezem stożkowym 90° (T2) zależy bezpośrednio od głębokości zejścia w osi Z?',
+        optionsPl: [
+          'Ponieważ ścianka boczna stożka jest nachylona pod kątem 45°, więc każde 1 mm głębiej w Z poszerza ścięcie krawędzi',
+          'Ponieważ frez T2 zmienia swoją średnicę pod wpływem chłodziwa M8',
+          'Szerokość fazy nie zależy od osi Z',
+        ],
+        correctOptionIndex: 0,
+        explanationPl: 'Przy kącie wierzchołkowym 90° (45° na stronę) zagłębienie stożka w osi Z przekłada się w stosunku 1:1 na szerokość ścięcia krawędzi.',
       },
     ],
   },

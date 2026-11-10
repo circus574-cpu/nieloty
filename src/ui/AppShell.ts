@@ -29,6 +29,11 @@ import type { MaterialAnalysisResult } from '../core/types/material';
 import { gradeLessonTask } from '../curriculum/grader';
 import { MODULE_0_LESSONS } from '../curriculum/module0/lessonsM0';
 import { MODULE_1_LESSONS } from '../curriculum/module1/lessonsM1';
+import {
+  MODULE_2_LESSONS,
+  MODULE_3_LESSONS,
+  MODULE_4_LESSONS,
+} from '../curriculum/modules2to4/lessonsM2toM4';
 import { SYLLABUS_MODULES_2_TO_4 } from '../curriculum/modules2to4/syllabusM2toM4';
 import { type CameraViewPreset, SceneManager } from '../simulator3d/SceneManager';
 import { SimulationPlayer } from '../simulator3d/SimulationPlayer';
@@ -43,6 +48,9 @@ import { WelcomeGuideModal } from './WelcomeGuideModal';
 const ALL_LESSONS: LessonDefinition[] = [
   ...MODULE_0_LESSONS,
   ...MODULE_1_LESSONS,
+  ...MODULE_2_LESSONS,
+  ...MODULE_3_LESSONS,
+  ...MODULE_4_LESSONS,
 ];
 
 export class AppShell {
@@ -123,9 +131,23 @@ export class AppShell {
     ).join('');
 
     this.root.innerHTML = `
+      <div class="nieloty-top-hero" role="banner">
+        <div class="nieloty-logo-wrap">
+          <svg class="nieloty-logo-svg" viewBox="0 0 44 44" width="38" height="38" aria-hidden="true">
+            <polygon points="22,2 40,12 40,32 22,42 4,32 4,12" fill="#0f172a" stroke="#fbbf24" stroke-width="2.5" />
+            <path d="M13,29 L22,10 L31,29 L25,25 L22,32 L19,25 Z" fill="#fbbf24" />
+            <circle cx="22" cy="18" r="2" fill="#0f172a" />
+          </svg>
+          <span class="nieloty-brand-domain">NIELOTY.PL</span>
+        </div>
+        <div class="nieloty-main-headline">
+          TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.
+        </div>
+      </div>
+
       <header class="app-header">
         <div class="brand-block">
-          <span class="brand-tag">INTERAKTYWNY KURS CNC • OD ZERA DO PROGRAMISTY</span>
+          <span class="brand-tag">🦅 NIELOTY.PL • TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
           <h1 class="app-title">Kurs Programowania Ruchu Maszyn CNC z Symulatorem 3D</h1>
         </div>
 
@@ -268,16 +290,34 @@ export class AppShell {
 
           <!-- Karta 2: Lista błędów i ostrzeżeń po polsku -->
           <div id="tab-diagnostics" class="tab-pane" role="tabpanel" hidden>
+            <div class="nieloty-subpage-top-banner">
+              <span class="nieloty-logo-badge">🦅 NIELOTY.PL</span>
+              <span class="nieloty-slogan-inline">TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
+            </div>
             <div id="diagnostics-list" class="diagnostics-list"></div>
+            <footer class="nieloty-subpage-footer">
+              Wszelkie prawa od mnie dla Ciebie. Copyright nieloty.pl
+            </footer>
           </div>
 
           <!-- Karta 3: Tabele narzędzi, korektorów H/D i punktów zerowych G54-G59 -->
           <div id="tab-tables" class="tab-pane" role="tabpanel" hidden>
+            <div class="nieloty-subpage-top-banner">
+              <span class="nieloty-logo-badge">🦅 NIELOTY.PL</span>
+              <span class="nieloty-slogan-inline">TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
+            </div>
             <div id="tables-host"></div>
+            <footer class="nieloty-subpage-footer">
+              Wszelkie prawa od mnie dla Ciebie. Copyright nieloty.pl
+            </footer>
           </div>
 
           <!-- Karta 4: Ręczne poruszanie osiami (JOG) -->
           <div id="tab-jog" class="tab-pane" role="tabpanel" hidden>
+            <div class="nieloty-subpage-top-banner">
+              <span class="nieloty-logo-badge">🦅 NIELOTY.PL</span>
+              <span class="nieloty-slogan-inline">TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
+            </div>
             <div class="jog-panel">
               <h4>Ręczne sterowanie osiami maszyny (Tryb JOG)</h4>
               <p class="table-hint">
@@ -314,21 +354,35 @@ export class AppShell {
                 </div>
               </div>
             </div>
+            <footer class="nieloty-subpage-footer">
+              Wszelkie prawa od mnie dla Ciebie. Copyright nieloty.pl
+            </footer>
           </div>
 
           <!-- Karta 5: Spis lekcji Modułów 2-4 -->
           <div id="tab-syllabus" class="tab-pane" role="tabpanel" hidden>
+            <div class="nieloty-subpage-top-banner">
+              <span class="nieloty-logo-badge">🦅 NIELOTY.PL</span>
+              <span class="nieloty-slogan-inline">TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
+            </div>
             <div class="tables-panel-content">
               <h3>Spis lekcji kolejnych modułów (Tokarka, 4 osie, 5 osi)</h3>
               <p class="table-hint">
-                Zgodnie z planem kursu po opanowaniu Modułu 0 i Modułu 1 przechodzimy do tokarki z głowicą rewolwerową
-                oraz frezarek wieloosiowych:
+                Wszystkie lekcje z Modułów 2–4 są już dostępne jako interaktywne lekcje z zadaniami na liście wyboru u góry ekranu:
               </p>
               ${syllabusHtml}
             </div>
+            <footer class="nieloty-subpage-footer">
+              Wszelkie prawa od mnie dla Ciebie. Copyright nieloty.pl
+            </footer>
           </div>
         </section>
       </main>
+
+      <footer class="nieloty-global-footer" role="contentinfo">
+        <span class="nieloty-footer-logo">🦅 NIELOTY.PL — TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
+        <span class="nieloty-footer-copy">Wszelkie prawa od mnie dla Ciebie. Copyright nieloty.pl</span>
+      </footer>
     `;
   }
 
@@ -462,26 +516,31 @@ export class AppShell {
     const completedCount = this.progressStore.getCompletedLessonsCount(allIds);
     this.progressBadgeEl.textContent = `Ukończono: ${completedCount}/${ALL_LESSONS.length}`;
 
-    const m0Options = MODULE_0_LESSONS.map((l) => {
-      const done = this.progressStore.getLessonRecord(l.id).taskCompleted;
-      return `<option value="${l.id}" ${
-        l.id === this.currentLesson.id ? 'selected' : ''
-      }>${done ? '✔ ' : '○ '}${l.titlePl}</option>`;
-    }).join('');
-
-    const m1Options = MODULE_1_LESSONS.map((l) => {
-      const done = this.progressStore.getLessonRecord(l.id).taskCompleted;
-      return `<option value="${l.id}" ${
-        l.id === this.currentLesson.id ? 'selected' : ''
-      }>${done ? '✔ ' : '○ '}${l.titlePl}</option>`;
-    }).join('');
+    const renderOptions = (lessons: LessonDefinition[]) =>
+      lessons
+        .map((l) => {
+          const done = this.progressStore.getLessonRecord(l.id).taskCompleted;
+          return `<option value="${l.id}" ${
+            l.id === this.currentLesson.id ? 'selected' : ''
+          }>${done ? '✔ ' : '○ '}${l.titlePl}</option>`;
+        })
+        .join('');
 
     this.lessonSelectEl.innerHTML = `
-      <optgroup label="Moduł 0: Wprowadzenie od zera (Lekcje 0.0 – 0.E)">
-        ${m0Options}
+      <optgroup label="Moduł 0: Wprowadzenie od zera (10 lekcji: 0.0 – 0.E)">
+        ${renderOptions(MODULE_0_LESSONS)}
       </optgroup>
-      <optgroup label="Moduł 1: Frezarka 3-osiowa CNC (Lekcje 1–14)">
-        ${m1Options}
+      <optgroup label="Moduł 1: Frezarka 3-osiowa CNC (18 lekcji: 1.1 – 1.18)">
+        ${renderOptions(MODULE_1_LESSONS)}
+      </optgroup>
+      <optgroup label="Moduł 2: Tokarka 2-osiowa CNC (4 lekcje: 2.1 – 2.4)">
+        ${renderOptions(MODULE_2_LESSONS)}
+      </optgroup>
+      <optgroup label="Moduł 3: Frezarka 4-osiowa – oś A (4 lekcje: 3.1 – 3.4)">
+        ${renderOptions(MODULE_3_LESSONS)}
+      </optgroup>
+      <optgroup label="Moduł 4: Frezarka 5-osiowa A+C i dialekty (4 lekcje: 4.1 – 4.4)">
+        ${renderOptions(MODULE_4_LESSONS)}
       </optgroup>
     `;
   }

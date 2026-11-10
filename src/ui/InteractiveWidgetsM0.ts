@@ -22,6 +22,9 @@ export function renderModule0Widget(
     case 'M0_A':
       renderTechnicalDrawingWidget(container, onTaskPassed);
       break;
+    case 'M0_2':
+      renderSectionDrawingWidget(container, onTaskPassed);
+      break;
     case 'M0_B':
       renderToleranceWidget(container, onTaskPassed);
       break;
@@ -31,12 +34,263 @@ export function renderModule0Widget(
     case 'M0_D':
       renderCuttingIntuitionWidget(container, onTaskPassed);
       break;
+    case 'M0_3':
+      renderWorkholdingAndProbingWidget(container, onTaskPassed);
+      break;
+    case 'M0_4':
+      renderOperatorPanelWidget(container, onTaskPassed);
+      break;
     case 'M0_E':
       renderMachineAnatomyWidget(container, onTaskPassed);
       break;
     default:
       container.innerHTML = '';
   }
+}
+
+function renderSectionDrawingWidget(
+  container: HTMLElement,
+  onTaskPassed: () => void
+): void {
+  container.innerHTML = `
+    <div class="m0-widget-card">
+      <h4>📐 Przekrój techniczny A-A: Otwór nieprzelotowy (↧), przelotowy i faza (2×45°)</h4>
+      <div class="m0-svg-box">
+        <svg viewBox="0 0 560 165" class="tech-drawing-svg" role="img" aria-label="Przekrój płytki z otworem nieprzelotowym fi 6 głębokość 12 oraz fazą 2x45 stopni">
+          <!-- Zarys przekroju kostki -->
+          <rect x="40" y="45" width="440" height="85" fill="#1e293b" stroke="#f8fafc" stroke-width="2.5" />
+          <text x="45" y="34" fill="#4ade80" font-size="12" font-weight="bold">Górna ścianka: Z = 0   |   Faza na krawędzi: C2 (2×45°)</text>
+
+          <!-- Otwór 1: Nieprzelotowy Ø6 ↧12 -->
+          <rect x="120" y="45" width="36" height="52" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+          <polygon points="120,97 138,109 156,97" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+          <text x="95" y="148" fill="#38bdf8" font-size="12" font-weight="bold">Otwór 1: Ø6 ↧12 (ślepy)</text>
+
+          <!-- Otwór 2: Przelotowy na wylot Ø10 -->
+          <rect x="310" y="45" width="52" height="85" fill="#0f172a" stroke="#fbbf24" stroke-width="2" />
+          <text x="275" y="148" fill="#fbbf24" font-size="12" font-weight="bold">Otwór 2: Ø10 PRZELOTOWY (na wylot)</text>
+        </svg>
+      </div>
+
+      <div class="m0-form-grid">
+        <label class="m0-field">
+          <span>1. Co oznacza zapis „Ø6 ↧12” przy Otworze 1?</span>
+          <select id="m02-q1" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="ok">Otwór o średnicy 6 mm wywiercony na głębokość 12 mm (czyli do Z = -12 mm)</option>
+            <option value="bad">Dwanaście otworów o średnicy 6 cali</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>2. Co oznacza zapis „C2” lub „2×45°” przy narożniku detalu?</span>
+          <select id="m02-q2" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="ok">Fazę (ścięcie ostrej krawędzi) o szerokości 2 mm pod kątem 45 stopni</option>
+            <option value="bad">Temperaturę chłodzenia 45 stopni</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>3. Czym różni się na przekroju otwór przelotowy od nieprzelotowego?</span>
+          <select id="m02-q3" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="ok">Przelotowy przechodzi na wylot przez całą grubość płytki, a nieprzelotowy ma dno wewnątrz materiału</option>
+            <option value="bad">Niczym się nie różnią</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="m0-actions-row">
+        <button type="button" id="btn-check-m02" class="btn btn-accent">
+          ✔ Sprawdź czytanie przekroju
+        </button>
+        <span id="m02-feedback" class="m0-feedback"></span>
+      </div>
+    </div>
+  `;
+
+  container.querySelector('#btn-check-m02')?.addEventListener('click', () => {
+    const q1 = container.querySelector<HTMLSelectElement>('#m02-q1')?.value;
+    const q2 = container.querySelector<HTMLSelectElement>('#m02-q2')?.value;
+    const q3 = container.querySelector<HTMLSelectElement>('#m02-q3')?.value;
+    const fb = container.querySelector<HTMLElement>('#m02-feedback')!;
+
+    if (q1 === 'ok' && q2 === 'ok' && q3 === 'ok') {
+      fb.textContent =
+        '🎉 Brawo! Bez problemu czytasz przekroje, głębokości otworów (↧) oraz oznaczenia faz (C / 45°)!';
+      fb.className = 'm0-feedback check-pass';
+      onTaskPassed();
+    } else {
+      fb.textContent =
+        '✖ Sprawdź jeszcze raz: ↧12 to głębokość wiercenia 12 mm, a 2×45° to ścięcie ostrej krawędzi (faza).';
+      fb.className = 'm0-feedback check-fail';
+    }
+  });
+}
+
+function renderWorkholdingAndProbingWidget(
+  container: HTMLElement,
+  onTaskPassed: () => void
+): void {
+  container.innerHTML = `
+    <div class="m0-widget-card">
+      <h4>🗜️ Warsztat: Mocowanie kostki w imadle na podkładkach i sondowanie bazy G54</h4>
+      <div class="m0-svg-box">
+        <svg viewBox="0 0 560 175" class="tech-drawing-svg" role="img" aria-label="Schemat imadła maszynowego z podkładkami równoległymi i sondą dotykową Renishaw">
+          <!-- Podstawa imadła -->
+          <rect x="40" y="135" width="320" height="24" fill="#475569" />
+          <!-- Szczęka stała (lewa) i ruchoma (prawa) -->
+          <rect x="55" y="75" width="35" height="60" fill="#64748b" stroke="#cbd5e1" />
+          <text x="35" y="68" fill="#38bdf8" font-size="11" font-weight="bold">Szczęka STAŁA</text>
+          <rect x="290" y="75" width="35" height="60" fill="#64748b" stroke="#cbd5e1" />
+          <text x="275" y="68" fill="#94a3b8" font-size="11">Szczęka ruchoma</text>
+
+          <!-- Dwie podkładki równoległe -->
+          <rect x="90" y="100" width="18" height="35" fill="#f59e0b" />
+          <rect x="272" y="100" width="18" height="35" fill="#f59e0b" />
+          <text x="122" y="125" fill="#fbbf24" font-size="11" font-weight="bold">← Wolna przestrzeń między podkładkami →</text>
+
+          <!-- Kostka obrabiana -->
+          <rect x="90" y="55" width="200" height="45" fill="#1e3a8a" stroke="#60a5fa" stroke-width="2" />
+          <!-- Punkt G54 -->
+          <circle cx="90" cy="55" r="6" fill="#4ade80" />
+          <text x="102" y="48" fill="#4ade80" font-size="12" font-weight="bold">Punkt zerowy G54 (X0, Y0, Z0)</text>
+
+          <!-- Sonda dotykowa z rubinową kulką -->
+          <rect x="78" y="10" width="24" height="22" fill="#94a3b8" />
+          <line x1="90" y1="32" x2="90" y2="46" stroke="#e2e8f0" stroke-width="3" />
+          <circle cx="90" cy="48" r="5" fill="#ef4444" />
+          <text x="365" y="48" fill="#f8fafc" font-size="12" font-weight="bold">🔴 Sonda dotykowa Renishaw</text>
+          <text x="365" y="68" fill="#cbd5e1" font-size="11">Dotyka ścianek kostki i zapisuje</text>
+          <text x="365" y="85" fill="#cbd5e1" font-size="11">współrzędne narożnika w tabeli G54</text>
+        </svg>
+      </div>
+
+      <div class="m0-form-grid">
+        <label class="m0-field">
+          <span>1. Po co pod kostkę w imadle podkładamy dwie stalowe podkładki równoległe?</span>
+          <select id="m03-q1" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="ok">Unoszą kostkę ponad szczęki imadła i zostawiają wolne miejsce pod spodem na wyjście wiertła</option>
+            <option value="bad">Żeby kostka wypadła z imadła</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>2. Jakim kodem w programie CNC wywołujemy główny Punkt Zerowy Przedmiotu ustawiony na narożniku kostki?</span>
+          <select id="m03-q2" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="g54">G54 (pierwszy układ współrzędnych przedmiotu W)</option>
+            <option value="m30">M30</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>3. Do czego służy sonda dotykowa z czerwoną rubinową kulką?</span>
+          <select id="m03-q3" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="ok">Do automatycznego dotknięcia boków i góry kostki, aby wyznaczyć punkt zerowy X0, Y0, Z0</option>
+            <option value="bad">Do wiercenia otworów w stali</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="m0-actions-row">
+        <button type="button" id="btn-check-m03" class="btn btn-accent">
+          ✔ Sprawdź bazowanie detalu
+        </button>
+        <span id="m03-feedback" class="m0-feedback"></span>
+      </div>
+    </div>
+  `;
+
+  container.querySelector('#btn-check-m03')?.addEventListener('click', () => {
+    const q1 = container.querySelector<HTMLSelectElement>('#m03-q1')?.value;
+    const q2 = container.querySelector<HTMLSelectElement>('#m03-q2')?.value;
+    const q3 = container.querySelector<HTMLSelectElement>('#m03-q3')?.value;
+    const fb = container.querySelector<HTMLElement>('#m03-feedback')!;
+
+    if (q1 === 'ok' && q2 === 'g54' && q3 === 'ok') {
+      fb.textContent =
+        '🎉 Doskonale! Rozumiesz zasady mocowania detalu w imadle, rolę podkładek równoległych i bazowanie G54!';
+      fb.className = 'm0-feedback check-pass';
+      onTaskPassed();
+    } else {
+      fb.textContent =
+        '✖ Sprawdź jeszcze raz: podkładki chronią imadło i unoszą detal, baza detalu to G54, a sonda mierzy narożnik.';
+      fb.className = 'm0-feedback check-fail';
+    }
+  });
+}
+
+function renderOperatorPanelWidget(
+  container: HTMLElement,
+  onTaskPassed: () => void
+): void {
+  container.innerHTML = `
+    <div class="m0-widget-card">
+      <h4>🎛️ Symulator Pierwszego Uruchomienia programu na pulpicie CNC (Prove-Out)</h4>
+      <p class="table-hint">
+        Wyobraź sobie, że właśnie napisałeś nowy program. Narzędzie zjeżdża w stronę kostki i zatrzymujesz je przyciskiem
+        <strong>FEED HOLD</strong>, gdy czubek frezu wisi <strong>20 mm nad górną ścianką kostki</strong>.
+      </p>
+
+      <div class="m0-form-grid">
+        <label class="m0-field">
+          <span>1. Który przycisk włączysz na pulpicie, aby wykonywać nowy program ostrożnie PO JEDNEJ LINIJCE kodu?</span>
+          <select id="m04-q1" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="sb">SINGLE BLOCK (w naszym symulatorze przycisk „Następna linia ▶”)</option>
+            <option value="turbo">Prędkość 1000%</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>2. Którym przyciskiem wstrzymasz dojazd osi Z nad kostką, nie wyłączając obrotów wrzeciona?</span>
+          <select id="m04-q2" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="fh">FEED HOLD (Wstrzymanie posuwu)</option>
+            <option value="off">Wyciągnięcie wtyczki z gniazdka</option>
+          </select>
+        </label>
+
+        <label class="m0-field">
+          <span>3. Czubek frezu wisi 20 mm nad kostką, a ekran pokazuje „Distance To Go (Pozostała droga): Z -15.0 mm”. Czy to bezpieczne?</span>
+          <select id="m04-q3" class="sample-select">
+            <option value="">-- wybierz odpowiedź --</option>
+            <option value="safe">TAK – narzędzie zjedzie o 15 mm i zatrzyma się bezpiecznie 5 mm NAD kostką (na Z5)</option>
+            <option value="crash">NIE – zjedzie pod stół</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="m0-actions-row">
+        <button type="button" id="btn-check-m04" class="btn btn-accent">
+          ✔ Sprawdź procedurę Pierwszego Uruchomienia
+        </button>
+        <span id="m04-feedback" class="m0-feedback"></span>
+      </div>
+    </div>
+  `;
+
+  container.querySelector('#btn-check-m04')?.addEventListener('click', () => {
+    const q1 = container.querySelector<HTMLSelectElement>('#m04-q1')?.value;
+    const q2 = container.querySelector<HTMLSelectElement>('#m04-q2')?.value;
+    const q3 = container.querySelector<HTMLSelectElement>('#m04-q3')?.value;
+    const fb = container.querySelector<HTMLElement>('#m04-feedback')!;
+
+    if (q1 === 'sb' && q2 === 'fh' && q3 === 'safe') {
+      fb.textContent =
+        '🎉 Brawo! Znasz zawodową procedurę Pierwszego Uruchomienia programu (Single Block + Feed Hold + Distance To Go)!';
+      fb.className = 'm0-feedback check-pass';
+      onTaskPassed();
+    } else {
+      fb.textContent =
+        '✖ Sprawdź jeszcze raz: używamy Single Block, zatrzymujemy dojazd przyciskiem Feed Hold i porównujemy wysokość z Distance To Go.';
+      fb.className = 'm0-feedback check-fail';
+    }
+  });
 }
 
 function renderWelcomeCncWidget(

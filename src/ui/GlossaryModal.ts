@@ -64,6 +64,10 @@ export class GlossaryModal {
 
     this.modalEl.innerHTML = `
       <div class="glossary-modal-card">
+        <div class="nieloty-subpage-top-banner">
+          <span class="nieloty-logo-badge">🦅 NIELOTY.PL</span>
+          <span class="nieloty-slogan-inline">TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
+        </div>
         <div class="glossary-modal-header">
           <h3>📖 Słownik pojęć CNC (Polsko-Angielski)</h3>
           <button type="button" id="btn-close-glossary" class="btn" aria-label="Zamknij słownik">
@@ -83,6 +87,9 @@ export class GlossaryModal {
         <div class="glossary-list">
           ${itemsHtml}
         </div>
+        <footer class="nieloty-subpage-footer">
+          Wszelkie prawa od mnie dla Ciebie. Copyright nieloty.pl
+        </footer>
       </div>
     `;
 
