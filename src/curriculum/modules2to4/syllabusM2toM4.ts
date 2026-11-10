@@ -94,4 +94,88 @@ export const SYLLABUS_MODULES_2_TO_4: SyllabusModuleOutline[] = [
       },
     ],
   },
+  {
+    moduleId: 'MODULE_5',
+    titlePl: 'Moduł 5: Wycinarka Laserowa / Plazmowa / Waterjet 2D CNC (osie X/Y)',
+    machineSummaryPl:
+      'Stalowy stół z rusztem grzebieniowym (slats), miedziana dysza tnąca, zapłon wiązki (M3/M5), przebijanie blachy (Piercing G04) i kompensacja szerokości cięcia (Kerf G41/G42).',
+    lessons: [
+      {
+        code: '5.1',
+        titlePl: 'Wycinarka laserowa i plazmowa CNC – zapłon wiązki (M3) i przebijanie blachy (Piercing G04)',
+        goalPl: 'Zrozumienie specyfiki cięcia termicznego na ruszcie grzebieniowym, zapłonu M3/M5 i postoju G04 P... na przebicie blachy.',
+      },
+      {
+        code: '5.2',
+        titlePl: 'Dojścia i wyjścia styczne (Lead-in / Lead-out) – ochrona krawędzi gotowego detalu',
+        goalPl: 'Wyprowadzenie punktu przebicia poza kontur nominalny za pomocą wejścia po prostej lub łuku (G1/G3).',
+      },
+      {
+        code: '5.3',
+        titlePl: 'Kompensacja szerokości szczeliny cięcia (Kerf Width G41/G42) w wycinarkach laserowych',
+        goalPl: 'Zastosowanie G41/G42 z promieniem dyszy/strumienia lasera (D1) w celu zachowania wymiarów nominalnych wyciętej formatki.',
+      },
+      {
+        code: '5.4',
+        titlePl: 'Nesting i kolejność wycinania konturów: dlaczego najpierw otwory wewnętrzne, a na końcu kontur zewnętrzny',
+        goalPl: 'Zaprogramowanie detalu z otworem wewnętrznym i konturem zewnętrznym z zachowaniem stabilności arkusza blachy.',
+      },
+    ],
+  },
+  {
+    moduleId: 'MODULE_6',
+    titlePl: 'Moduł 6: Ploter bramowy CNC / Router do drewna i kompozytów (24 000 RPM)',
+    machineSummaryPl:
+      'Ruchoma brama jezdna (Gantry), płyta podkładowa MDF (Spoilboard), wysokoobrotowe elektrowrzeciono 24 000 RPM, frezy grawerskie stożkowe V-Bit oraz mostki trzymające (Holding Tabs).',
+    lessons: [
+      {
+        code: '6.1',
+        titlePl: 'Specyfika plotera bramowego – wysokie obroty wrzeciona (24 000 RPM) i posuwy w drewnie/MDF',
+        goalPl: 'Zrozumienie zależności prędkości skrawania i posuwu na ząb przy obróbce drewna i tworzyw bez przypalania materiału.',
+      },
+      {
+        code: '6.2',
+        titlePl: 'Grawerowanie stożkowe (V-Carving) frezem V-Bit 60°/90° na zadanej głębokości Z',
+        goalPl: 'Użycie frezu stożkowego V-Bit do grawerowania ozdobnych rowków w płycie meblowej.',
+      },
+      {
+        code: '6.3',
+        titlePl: 'Mostki trzymające detal (Holding Tabs / Z-Bridges) przy rozkroju na wylot',
+        goalPl: 'Zabezpieczenie wycinanego elementu przed wyrwaniem przez podniesienie frezu o wysokość mostka (np. Z-2).',
+      },
+      {
+        code: '6.4',
+        titlePl: 'Rozkrój głęboki w płytach meblowych i kompozytach – frezowanie wielowarstwowe (Step-down)',
+        goalPl: 'Zaprogramowanie bezpiecznego rozkroju płyty 12 mm w trzech przejściach po 4 mm.',
+      },
+    ],
+  },
+  {
+    moduleId: 'MODULE_7',
+    titlePl: 'Moduł 7: Centrum Tokarsko-Frezarskie Mill-Turn (oprawki napędzane + oś C i oś Y)',
+    machineSummaryPl:
+      'Uchwyt tokarski 3-szczękowy pozycjonowany kątowo jako oś C, oprawki napędzane (Live Tooling), suport z osią Y prostopadłą do osi wrzeciona – kompletna obróbka w jednym zamocowaniu.',
+    lessons: [
+      {
+        code: '7.1',
+        titlePl: 'Architektura centrum Mill-Turn: wrzeciono główne jako oś C i oprawki napędzane (Live Tooling)',
+        goalPl: 'Zrozumienie przełączenia wrzeciona tokarskiego w precyzyjną oś pozycjonowaną kątowo (oś C) i uruchomienia frezu napędzanego.',
+      },
+      {
+        code: '7.2',
+        titlePl: 'Wiercenie otworów na czole wałka po okręgu podziałowym (PCD) z indeksacją kątową osi C',
+        goalPl: 'Użycie cyklu wiercenia G81 w połączeniu z obrotami osi C (C0, C120, C240).',
+      },
+      {
+        code: '7.3',
+        titlePl: 'Frezowanie sześciokąta pod klucz na czole wałka przy użyciu osi Y oraz osi C',
+        goalPl: 'Zastosowanie osi Y do wykonania płaskich powierzchni klucza na czole detalu toczonego.',
+      },
+      {
+        code: '7.4',
+        titlePl: 'Frezowanie rowka śrubowego / krzywkowego na pobocznicy wałka – synchronizacja osi Z i osi C',
+        goalPl: 'Jednoczesny ruch osi wzdłużnej Z i kątowej C w celu wyfrezowania rowka śrubowego.',
+      },
+    ],
+  },
 ];

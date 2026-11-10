@@ -123,9 +123,14 @@ export class HeightmapMaterialModel implements IMaterialModel {
     const maxY = minY + this.stock.sizeYMm;
     const rSq = physRadiusMm * physRadiusMm;
 
-    // Współczynnik stożka dla wiertła lub frezu fazującego
+    // Współczynnik stożka dla wiertła, frezu fazującego lub frezu grawerskiego V-Bit
     let coneSlope = 0;
-    if (tool && (tool.type === 'DRILL' || tool.type === 'CHAMFER_MILL')) {
+    if (
+      tool &&
+      (tool.type === 'DRILL' ||
+        tool.type === 'CHAMFER_MILL' ||
+        tool.type === 'V_BIT')
+    ) {
       const angleDeg = tool.pointAngleDeg ?? (tool.type === 'DRILL' ? 118 : 90);
       const halfAngleRad = ((angleDeg / 2) * Math.PI) / 180;
       const tanHalf = Math.tan(halfAngleRad);

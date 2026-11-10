@@ -16,17 +16,19 @@ import type { LessonDefinition } from '../../core/types/curriculum';
 import type { MachineConfig } from '../../core/types/machine';
 
 /** Rozszerzona konfiguracja maszyny z opisem edukacyjnym dla Modułu 2 (symulacja profili tokarskich X/Z w przestrzeni 3D) */
-const MODULE_2_MACHINE: MachineConfig = {
+export const MODULE_2_MACHINE: MachineConfig = {
   ...MILL_3AXIS_MACHINE,
   id: 'lathe-2axis-edu-sim',
-  name: 'Tokarka CNC – profil X/Z w symulatorze 3D (Moduł 2)',
+  name: 'Tokarka CNC z uchwytem 3-szczękowym (Moduł 2)',
+  kinematics: 'LATHE_2AXIS',
 };
 
 /** Konfiguracja maszyny dla Modułu 3 (Frezarka 4-osiowa z osią obrotową A) */
-const MODULE_3_MACHINE: MachineConfig = {
+export const MODULE_3_MACHINE: MachineConfig = {
   ...MILL_3AXIS_MACHINE,
   id: 'mill-4axis-edu',
   name: 'Frezarka 4-osiowa CNC z podzielnicą A (Moduł 3)',
+  kinematics: 'MILL_4AXIS',
   limits: {
     ...MILL_3AXIS_MACHINE.limits,
     a: { min: -360, max: 360 },
@@ -34,10 +36,11 @@ const MODULE_3_MACHINE: MachineConfig = {
 };
 
 /** Konfiguracja maszyny dla Modułu 4 (Frezarka 5-osiowa ze stołem uchylno-obrotowym A i C) */
-const MODULE_4_MACHINE: MachineConfig = {
+export const MODULE_4_MACHINE: MachineConfig = {
   ...MILL_3AXIS_MACHINE,
   id: 'mill-5axis-edu',
   name: 'Frezarka 5-osiowa CNC z kołyską A i tarczą C (Moduł 4)',
+  kinematics: 'MILL_5AXIS',
   limits: {
     ...MILL_3AXIS_MACHINE.limits,
     a: { min: -120, max: 120 },

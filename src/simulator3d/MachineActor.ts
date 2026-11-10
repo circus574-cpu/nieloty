@@ -10,6 +10,7 @@
 import * as THREE from 'three';
 import type { CoolantState, SpindleState } from '../core/types/common';
 import type {
+  MachineKinematicsType,
   PrismaticStock,
   ToolDefinition,
   Vector5D,
@@ -21,8 +22,12 @@ export class MachineActor {
   private wcsAxesGroup: THREE.Group;
   private toolAssemblyGroup: THREE.Group;
   private rotatingCutterGroup: THREE.Group;
+  private gantryBridgeGroup: THREE.Group | null = null;
+  private rotaryChuckGroup: THREE.Group | null = null;
+  private laserBeamGroup: THREE.Group | null = null;
   private coolantRingMesh: THREE.Mesh;
   private currentToolPocket = -1;
+  private activeKinematics: MachineKinematicsType = 'MILL_3AXIS';
   private spindleState: SpindleState = 'M5_STOP';
 
   constructor() {
@@ -55,9 +60,21 @@ export class MachineActor {
   }
 
   /**
-   * Buduje stół maszynowy oraz szczęki imadła dopasowane do wymiarów surówki.
+   * Buduje stół maszynowy dopasowany do wybranego typu obrabiarki:
+   * - LASER_CUTTER: Ruszt grzebieniowy wycinarki laserowej/plazmowej,
+   * - GANTRY_ROUTER: Płyta podkładowa MDF (Spoilboard) + ruchoma brama jezdna Y,
+   * - MILL_TURN / LATHE_2AXIS: Uchwyt 3-szczękowy samocentrujący z obrotem osi C,
+   * - MILL_3AXIS / MILL_4AXIS / MILL_5AXIS: Stół teowy i imadło maszynowe.
    */
-  public configureForStock(stock: PrismaticStock): void {
+  public configureForStock(
+    stock: PrismaticStock,
+    kinematics: MachineKinematicsType = 'MILL_3AXIS'
+  ): void {
+    this.activeKinematics = kinematics;
+    this.currentToolPocket = -1;
+    this.gantryBridgeGroup = null;
+    this.rotaryChuckGroup = null;
+
     while (this.tableGroup.children.length > 0) {
       this.tableGroup.remove(this.tableGroup.children[0]!);
     }
@@ -68,39 +85,130 @@ export class MachineActor {
     const centerX = minX + stock.sizeXMm / 2;
     const centerY = minY + stock.sizeYMm / 2;
 
-    // 1. Szczęki imadła maszynowego (przód i tył wzdłuż osi Y)
-    const jawHeight = Math.min(10, stock.sizeZMm * 0.45);
-    const jawDepth = 12;
-    const jawWidth = stock.sizeXMm + 16;
-    const jawMat = new THREE.MeshStandardMaterial({
-      color: 0x334155,
-      roughness: 0.5,
-      metalness: 0.6,
-    });
+    if (kinematics === 'LASER_CUTTER') {
+      // Ruszt grzebieniowy wycinarki laserowej / plazmowej
+      const slatMat = new THREE.MeshStandardMaterial({
+        color: 0x475569,
+        roughness: 0.6,
+        metalness: 0.7,
+      });
+      const slatsCount = 11;
+      for (let i = 0; i < slatsCount; i++) {
+        const yPos = minY - 10 + (i / (slatsCount - 1)) * (stock.sizeYMm + 20);
+        const slat = new THREE.Mesh(
+          new THREE.BoxGeometry(stock.sizeXMm + 40, 1.5, 14),
+          slatMat
+        );
+        slat.position.set(centerX, yPos, bottomZ - 7.2);
+        this.tableGroup.add(slat);
+      }
 
-    const frontJaw = new THREE.Mesh(
-      new THREE.BoxGeometry(jawWidth, jawDepth, jawHeight),
-      jawMat
-    );
-    frontJaw.position.set(
-      centerX,
-      minY - jawDepth / 2 - 0.2,
-      bottomZ + jawHeight / 2
-    );
-    this.tableGroup.add(frontJaw);
+      const panMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(stock.sizeXMm + 80, stock.sizeYMm + 60, 6),
+        new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 })
+      );
+      panMesh.position.set(centerX, centerY, bottomZ - 17);
+      this.tableGroup.add(panMesh);
+    } else if (kinematics === 'GANTRY_ROUTER') {
+      // Płyta podkładowa MDF (Spoilboard) + ruchoma brama jezdna plotera CNC
+      const spoilboardMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(stock.sizeXMm + 40, stock.sizeYMm + 40, 8),
+        new THREE.MeshStandardMaterial({
+          color: 0x854d0e,
+          roughness: 0.85,
+          metalness: 0.1,
+        })
+      );
+      spoilboardMesh.position.set(centerX, centerY, bottomZ - 4.1);
+      this.tableGroup.add(spoilboardMesh);
 
-    const backJaw = new THREE.Mesh(
-      new THREE.BoxGeometry(jawWidth, jawDepth, jawHeight),
-      jawMat
-    );
-    backJaw.position.set(
-      centerX,
-      minY + stock.sizeYMm + jawDepth / 2 + 0.2,
-      bottomZ + jawHeight / 2
-    );
-    this.tableGroup.add(backJaw);
+      // Ruchoma brama jezdna (Gantry Bridge) poruszająca się wzdłuż osi Y
+      const gantry = new THREE.Group();
+      const aluMat = new THREE.MeshStandardMaterial({
+        color: 0x94a3b8,
+        roughness: 0.35,
+        metalness: 0.75,
+      });
+      const spanX = stock.sizeXMm + 70;
+      const leftPost = new THREE.Mesh(new THREE.BoxGeometry(10, 14, 75), aluMat);
+      leftPost.position.set(centerX - spanX / 2, 0, bottomZ + 32);
+      const rightPost = new THREE.Mesh(new THREE.BoxGeometry(10, 14, 75), aluMat);
+      rightPost.position.set(centerX + spanX / 2, 0, bottomZ + 32);
+      const beam = new THREE.Mesh(
+        new THREE.BoxGeometry(spanX + 10, 12, 14),
+        aluMat
+      );
+      beam.position.set(centerX, 0, bottomZ + 66);
+      gantry.add(leftPost, rightPost, beam);
+      gantry.position.set(0, centerY, 0);
+      this.gantryBridgeGroup = gantry;
+      this.tableGroup.add(gantry);
+    } else if (kinematics === 'MILL_TURN' || kinematics === 'LATHE_2AXIS') {
+      // Uchwyt tokarski 3-szczękowy samocentrujący (z obrotem osi C)
+      const chuckGroup = new THREE.Group();
+      chuckGroup.position.set(centerX, centerY, bottomZ - 6);
 
-    // 2. Korpus stołu frezarki pod imadłem
+      const chuckBody = new THREE.Mesh(
+        new THREE.CylinderGeometry(58, 62, 18, 32),
+        new THREE.MeshStandardMaterial({
+          color: 0x334155,
+          roughness: 0.4,
+          metalness: 0.8,
+        })
+      );
+      chuckBody.rotateX(Math.PI / 2);
+      chuckBody.position.set(0, 0, -4);
+      chuckGroup.add(chuckBody);
+
+      const jawMat = new THREE.MeshStandardMaterial({
+        color: 0x94a3b8,
+        roughness: 0.3,
+        metalness: 0.85,
+      });
+      for (let i = 0; i < 3; i++) {
+        const angle = (i * 2 * Math.PI) / 3;
+        const jaw = new THREE.Mesh(new THREE.BoxGeometry(22, 12, 16), jawMat);
+        jaw.position.set(Math.cos(angle) * 48, Math.sin(angle) * 48, 8);
+        jaw.rotation.z = angle;
+        chuckGroup.add(jaw);
+      }
+      this.rotaryChuckGroup = chuckGroup;
+      this.tableGroup.add(chuckGroup);
+    } else {
+      // 1. Szczęki imadła maszynowego (przód i tył wzdłuż osi Y)
+      const jawHeight = Math.min(10, stock.sizeZMm * 0.45);
+      const jawDepth = 12;
+      const jawWidth = stock.sizeXMm + 16;
+      const jawMat = new THREE.MeshStandardMaterial({
+        color: 0x334155,
+        roughness: 0.5,
+        metalness: 0.6,
+      });
+
+      const frontJaw = new THREE.Mesh(
+        new THREE.BoxGeometry(jawWidth, jawDepth, jawHeight),
+        jawMat
+      );
+      frontJaw.position.set(
+        centerX,
+        minY - jawDepth / 2 - 0.2,
+        bottomZ + jawHeight / 2
+      );
+      this.tableGroup.add(frontJaw);
+
+      const backJaw = new THREE.Mesh(
+        new THREE.BoxGeometry(jawWidth, jawDepth, jawHeight),
+        jawMat
+      );
+      backJaw.position.set(
+        centerX,
+        minY + stock.sizeYMm + jawDepth / 2 + 0.2,
+        bottomZ + jawHeight / 2
+      );
+      this.tableGroup.add(backJaw);
+    }
+
+    // 2. Korpus stołu maszynowego pod spodem
     const tableWidth = Math.max(220, stock.sizeXMm + 120);
     const tableDepth = Math.max(160, stock.sizeYMm + 100);
     const tableThickness = 10;
@@ -116,7 +224,7 @@ export class MachineActor {
     tableMesh.position.set(
       centerX,
       centerY,
-      bottomZ - tableThickness / 2 - 0.5
+      bottomZ - tableThickness / 2 - 14
     );
     this.tableGroup.add(tableMesh);
 
@@ -158,6 +266,21 @@ export class MachineActor {
       positionWcs.z
     );
 
+    // Ruch bramy plotera CNC wzdłuż osi Y
+    if (this.gantryBridgeGroup) {
+      this.gantryBridgeGroup.position.y = positionWcs.y;
+    }
+
+    // Obrót uchwytu 3-szczękowego osi C (Mill-Turn)
+    if (this.rotaryChuckGroup) {
+      this.rotaryChuckGroup.rotation.z = (positionWcs.c * Math.PI) / 180;
+    }
+
+    // Wizualizacja wiązki laserowej/plazmowej podczas aktywnego M3
+    if (this.laserBeamGroup) {
+      this.laserBeamGroup.visible = spindleState !== 'M5_STOP';
+    }
+
     const toolLen = tool?.lengthMm ?? 45;
     this.coolantRingMesh.position.set(0, 0, toolLen + 2);
     this.coolantRingMesh.visible = coolantState === 'M8_FLOOD';
@@ -178,24 +301,62 @@ export class MachineActor {
     while (this.rotatingCutterGroup.children.length > 0) {
       this.rotatingCutterGroup.remove(this.rotatingCutterGroup.children[0]!);
     }
+    this.laserBeamGroup = null;
 
     const diameter = tool ? tool.diameterMm : 8;
-    const radius = diameter / 2;
+    const radius = Math.max(0.6, diameter / 2);
     const length = tool ? tool.lengthMm : 45;
 
-    if (tool) {
+    if (tool?.type === 'LASER_NOZZLE' || this.activeKinematics === 'LASER_CUTTER') {
+      // Miedziana dysza stożkowa głowicy laserowej / plazmowej
+      const nozzleMat = new THREE.MeshStandardMaterial({
+        color: 0xd97706,
+        roughness: 0.25,
+        metalness: 0.85,
+      });
+      const nozzleCone = new THREE.ConeGeometry(9, 22, 24);
+      nozzleCone.rotateX(-Math.PI / 2);
+      nozzleCone.translate(0, 0, 15);
+      this.rotatingCutterGroup.add(new THREE.Mesh(nozzleCone, nozzleMat));
+
+      // Świecąca wiązka lasera/plazmy + pierścień iskier (widoczne przy M3)
+      const beamGroup = new THREE.Group();
+      const beamCyl = new THREE.CylinderGeometry(
+        Math.max(0.8, radius),
+        Math.max(0.8, radius),
+        12,
+        16
+      );
+      beamCyl.rotateX(Math.PI / 2);
+      beamCyl.translate(0, 0, 2);
+      const beamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+      beamGroup.add(new THREE.Mesh(beamCyl, beamMat));
+
+      const sparkRing = new THREE.Mesh(
+        new THREE.TorusGeometry(3.8, 0.7, 8, 20),
+        new THREE.MeshBasicMaterial({ color: 0xfbbf24 })
+      );
+      sparkRing.position.set(0, 0, 0.5);
+      beamGroup.add(sparkRing);
+      this.laserBeamGroup = beamGroup;
+      this.rotatingCutterGroup.add(beamGroup);
+    } else if (tool) {
       const cutterMat = new THREE.MeshStandardMaterial({
         color:
           tool.type === 'DRILL'
             ? 0xfacc15
-            : tool.type === 'CHAMFER_MILL'
+            : tool.type === 'CHAMFER_MILL' || tool.type === 'V_BIT'
             ? 0xf97316
             : 0x38bdf8,
         roughness: 0.3,
         metalness: 0.7,
       });
 
-      if (tool.type === 'DRILL' || tool.type === 'CHAMFER_MILL') {
+      if (
+        tool.type === 'DRILL' ||
+        tool.type === 'CHAMFER_MILL' ||
+        tool.type === 'V_BIT'
+      ) {
         const angleDeg = tool.pointAngleDeg ?? (tool.type === 'DRILL' ? 118 : 90);
         const halfRad = ((angleDeg / 2) * Math.PI) / 180;
         const tipHeight = Math.min(length * 0.4, radius / Math.tan(halfRad));

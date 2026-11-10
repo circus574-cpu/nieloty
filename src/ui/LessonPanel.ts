@@ -272,7 +272,13 @@ export class LessonPanel {
                   ? 'MODUŁ 2 • TOKARKA 2-OSIOWA CNC (OSIE X/Z I ŚREDNICE)'
                   : lesson.moduleId === 'MODULE_3'
                   ? 'MODUŁ 3 • FREZARKA 4-OSIOWA CNC (PODZIELNICA – OŚ A)'
-                  : 'MODUŁ 4 • OBRÓBKA 5-OSIOWA (A+C) I DIALEKTY STEROWAŃ'
+                  : lesson.moduleId === 'MODULE_4'
+                  ? 'MODUŁ 4 • OBRÓBKA 5-OSIOWA (A+C) I DIALEKTY STEROWAŃ'
+                  : lesson.moduleId === 'MODULE_5'
+                  ? 'MODUŁ 5 • WYCINARKA LASEROWA / PLAZMOWA / WATERJET 2D CNC'
+                  : lesson.moduleId === 'MODULE_6'
+                  ? 'MODUŁ 6 • PLOTER BRAMOWY CNC / ROUTER 24 000 RPM (DREWNO I KOMPOZYTY)'
+                  : 'MODUŁ 7 • CENTRUM TOKARSKO-FREZARSKIE MILL-TURN (OSIE C + Y)'
               }
             </span>
             <h2 class="lesson-title">${lesson.titlePl}</h2>

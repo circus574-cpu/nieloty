@@ -12,6 +12,7 @@ import { HeightmapMaterialModel } from '../core/simulation/heightmapModel';
 import type { CoolantState, SpindleState } from '../core/types/common';
 import type { MotionSegment } from '../core/types/interpreter';
 import type {
+  MachineKinematicsType,
   PrismaticStock,
   ToolDefinition,
   Vector5D,
@@ -83,11 +84,12 @@ export class SceneManager {
 
   public setStockAndRebuildScene(
     stock: PrismaticStock,
-    heightmap: HeightmapMaterialModel
+    heightmap: HeightmapMaterialModel,
+    kinematics: MachineKinematicsType = 'MILL_3AXIS'
   ): void {
     const isFirstStock = this.currentStock === null;
     this.currentStock = stock;
-    this.machineActor.configureForStock(stock);
+    this.machineActor.configureForStock(stock, kinematics);
     this.workpieceMesh.updateFromHeightmap(heightmap);
 
     if (isFirstStock) {

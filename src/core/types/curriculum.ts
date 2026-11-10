@@ -23,7 +23,10 @@ export type CourseModuleId =
   | 'MODULE_1'
   | 'MODULE_2'
   | 'MODULE_3'
-  | 'MODULE_4';
+  | 'MODULE_4'
+  | 'MODULE_5'
+  | 'MODULE_6'
+  | 'MODULE_7';
 
 /** Pojedyncze kryterium sprawdzania zadania na podstawie wyniku symulacji (nie po tekście kodu!) */
 export type TaskAssertion =

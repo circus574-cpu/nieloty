@@ -5,10 +5,13 @@
 
 /** Typ kinematyki maszyny przypisany do modułu kursu */
 export type MachineKinematicsType =
-  | 'MILL_3AXIS'   // Moduł 1: Frezarka 3-osiowa (X, Y, Z)
-  | 'LATHE_2AXIS'  // Moduł 2: Tokarka z rewolwerem (X - średnicowo, Z - wzdłużnie)
-  | 'MILL_4AXIS'   // Moduł 3: Frezarka 4-osiowa (X, Y, Z + oś obrotowa A wokół X)
-  | 'MILL_5AXIS';  // Moduł 4: Frezarka 5-osiowa (X, Y, Z + osie obrotowe A i C)
+  | 'MILL_3AXIS'     // Moduł 1: Frezarka 3-osiowa (X, Y, Z)
+  | 'LATHE_2AXIS'    // Moduł 2: Tokarka z rewolwerem (X - średnicowo, Z - wzdłużnie)
+  | 'MILL_4AXIS'     // Moduł 3: Frezarka 4-osiowa (X, Y, Z + oś obrotowa A wokół X)
+  | 'MILL_5AXIS'     // Moduł 4: Frezarka 5-osiowa (X, Y, Z + osie obrotowe A i C)
+  | 'LASER_CUTTER'   // Moduł 5: Wycinarka Laserowa / Plazmowa / Waterjet 2D CNC
+  | 'GANTRY_ROUTER'  // Moduł 6: Ploter bramowy CNC (Gantry Router do drewna/kompozytów/Alu)
+  | 'MILL_TURN';     // Moduł 7: Centrum tokarsko-frezarskie z napędzanymi narzędziami (oś C + oś Y)
 
 /** Współrzędne 3D (w milimetrach) */
 export interface Vector3D {
@@ -56,7 +59,9 @@ export type ToolGeometryType =
   | 'CHAMFER_MILL'    // Frez fazujący / grawerski
   | 'DRILL'           // Wiertło kręte
   | 'LATHE_TURNING'   // Nóż tokarski do toczenia zewnętrznego (Moduł 2)
-  | 'LATHE_GROOVING'; // Nóż tokarski przecinak / do rowków (Moduł 2)
+  | 'LATHE_GROOVING'  // Nóż tokarski przecinak / do rowków (Moduł 2)
+  | 'LASER_NOZZLE'    // Głowica / wiązka laserowa, plazmowa lub struga wodna (Moduł 5)
+  | 'V_BIT';          // Frez grawerski stożkowy V-Bit do plotera (Moduł 6)
 
 /**
  * Definicja FIZYCZNEGO narzędzia zamocowanego w oprawce w magazynie narzędziowym.

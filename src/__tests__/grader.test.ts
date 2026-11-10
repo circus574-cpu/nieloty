@@ -18,9 +18,19 @@ import {
   MODULES_2_TO_4_LESSONS,
 } from '../curriculum/modules2to4/lessonsM2toM4';
 import { SYLLABUS_MODULES_2_TO_4 } from '../curriculum/modules2to4/syllabusM2toM4';
+import {
+  MODULE_5_LESSONS,
+  MODULE_6_LESSONS,
+  MODULE_7_LESSONS,
+  MODULES_5_TO_7_LESSONS,
+} from '../curriculum/modules5to7/lessonsM5toM7';
 import { SafeProgressStore } from '../storage/progressStore';
 
-const ALL_GCODE_LESSONS = [...MODULE_1_LESSONS, ...MODULES_2_TO_4_LESSONS];
+const ALL_GCODE_LESSONS = [
+  ...MODULE_1_LESSONS,
+  ...MODULES_2_TO_4_LESSONS,
+  ...MODULES_5_TO_7_LESSONS,
+];
 
 function evaluateGCodeForLesson(lessonId: string, sourceCode: string) {
   const lesson = ALL_GCODE_LESSONS.find((l) => l.id === lessonId);
@@ -140,7 +150,7 @@ describe('SafeProgressStore oraz kompletność struktury kursu (Moduł 0, Słown
     expect(store.getCompletedLessonsCount(['M0_A', 'M1_01', 'M1_02'])).toBe(1);
   });
 
-  it('Posiada kompletny Moduł 0 (10 lekcji), Moduł 1 (18 lekcji), Moduły 2–4 (12 lekcji = 40 lekcji łącznie) oraz Słowniczek', () => {
+  it('Posiada kompletny Moduł 0 (10 lekcji), Moduł 1 (18 lekcji), Moduły 2–4 (12 lekcji), Moduły 5–7 (12 lekcji = 52 lekcje łącznie) oraz Słowniczek', () => {
     expect(MODULE_0_LESSONS.length).toBe(10);
     expect(MODULE_0_LESSONS[0]?.id).toBe('M0_0');
     expect(MODULE_0_LESSONS[1]?.id).toBe('M0_1');
@@ -148,14 +158,19 @@ describe('SafeProgressStore oraz kompletność struktury kursu (Moduł 0, Słown
     expect(MODULE_2_LESSONS.length).toBe(4);
     expect(MODULE_3_LESSONS.length).toBe(4);
     expect(MODULE_4_LESSONS.length).toBe(4);
+    expect(MODULE_5_LESSONS.length).toBe(4);
+    expect(MODULE_6_LESSONS.length).toBe(4);
+    expect(MODULE_7_LESSONS.length).toBe(4);
     expect(MODULES_2_TO_4_LESSONS.length).toBe(12);
+    expect(MODULES_5_TO_7_LESSONS.length).toBe(12);
     expect(CNC_GLOSSARY.length).toBeGreaterThanOrEqual(20);
-    expect(SYLLABUS_MODULES_2_TO_4.length).toBe(3);
+    expect(SYLLABUS_MODULES_2_TO_4.length).toBe(6);
 
     for (const lesson of [
       ...MODULE_0_LESSONS,
       ...MODULE_1_LESSONS,
       ...MODULES_2_TO_4_LESSONS,
+      ...MODULES_5_TO_7_LESSONS,
     ]) {
       expect(lesson.quiz.length).toBeGreaterThan(0);
       expect(lesson.theoryParagraphsPl.length).toBeGreaterThan(0);

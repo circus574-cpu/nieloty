@@ -1,8 +1,8 @@
 # 🦅 NIELOTY.PL — TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.
 
-## Kurs Programowania Ruchu Maszyn CNC z Symulatorem 3D (40 Lekcji • 5 Modułów)
+## Kurs Programowania Ruchu Maszyn CNC z Symulatorem 3D (52 Lekcje • 8 Modułów)
 
-Interaktywna aplikacja edukacyjna w przeglądarce ucząca programowania ruchu obrabiarek sterowanych numerycznie (**CNC – Computer Numerical Control**) w języku **G-code** (dialekt bazowy w stylu **ISO 6983 / Fanuc / Haas** oraz porównanie z **Siemens Sinumerik**, **Heidenhain Klartext** i **GRBL / LinuxCNC**) od całkowitych podstaw.
+Interaktywna aplikacja edukacyjna w przeglądarce ucząca programowania ruchu obrabiarek sterowanych numerycznie (**CNC – Computer Numerical Control**) w języku **G-code** (dialekt bazowy w stylu **ISO 6983 / Fanuc / Haas** oraz porównanie z **Siemens Sinumerik**, **Heidenhain Klartext** i **GRBL / LinuxCNC**) od całkowitych podstaw do zaawansowanych maszyn wieloosiowych, laserów i centrów tokarsko-frezarskich.
 
 > **⚠️ WAŻNA INFORMACJA O BEZPIECZEŃSTWIE (BHP)**  
 > Ten kurs wykorzystuje uproszczony model nauczania i **nie zastępuje** dokumentacji techniczno-ruchowej rzeczywistego sterownika obrabiarki, szkolenia stanowiskowego BHP ani pracy pod nadzorem doświadczonego operatora/ustawiacza. Nigdy nie uruchamiaj niesprawdzonego programu na prawdziwej maszynie bez weryfikacji na pojedynczym bloku (`Single Block`), obniżonego posuwu szybkiego (`Rapid Override`) i nadzoru instruktora.
@@ -26,7 +26,7 @@ npm run dev
 # 3. Sprawdzenie typów TypeScript (strict: true)
 npm run typecheck
 
-# 4. Uruchomienie wszystkich testów jednostkowych (Vitest)
+# 4. Uruchomienie wszystkich testów jednostkowych (Vitest – 87 testów)
 npm test
 
 # 5. Zbudowanie paczki produkcyjnej do katalogu dist/
@@ -57,26 +57,31 @@ Tekst G-code (Fanuc/ISO, docelowo Siemens / Heidenhain / GRBL)
 [3] Wymienny Analizator Materiału i Kolizji (src/core/simulation/materialAnalyzer.ts)
       │  Przyjmuje MotionSegment[], surówkę (WorkpieceStock) oraz model
       │  materiału (HeightmapMaterialModel o domyślnej rozdzielczości 0.5 mm,
-      │  min. 0.25 mm). Oblicza ubytek materiału i wykrywa kolizje (np. G0
-      │  w materiale, skrawanie przy wyłączonym wrzecionie M5, przebicie dna).
+      │  min. 0.25 mm; obsługa frezów walcowych, wiertła stożkowego i frezu V-Bit).
+      │  Oblicza ubytek materiału i wykrywa kolizje (np. G0 w materiale,
+      │  skrawanie przy wyłączonym wrzecionie M5, przebicie dna).
       ▼
 [4] Wizualizacja 3D (Three.js) + Sprawdzacz Zadań (TaskGrader)
+      │  Dedykowane modele 3D: stół z imadłem (Frezarka), uchwyt 3-szczękowy
+      │  z obrotem osi C (Tokarka / Mill-Turn), stół z rusztem grzebieniowym
+      │  i dysza z animowaną wiązką lasera (Laser Cutter), oraz płyta MDF ze
+      │  spoilboardem i ruchomą bramą jezdną (Ploter Bramowy CNC).
 ```
 
 ### Główne katalogi w `src/`
 - `src/core/types/` – kontrakty domenowe (`common.ts`, `machine.ts`, `ir.ts`, `interpreter.ts`, `material.ts`, `curriculum.ts`).
 - `src/core/dialects/` – parser dialektu ISO/Fanuc do postaci pośredniej (`CanonicalProgramIR`).
 - `src/core/gcode/` – czysty interpreter kinematyczny, geometria łuków (`arcs.ts`), kompensacja promieniowa (`cutterCompensation.ts`), rozwijanie cykli wiertarskich (`cannedCycles.ts`).
-- `src/core/simulation/` – model siatki wysokości 2.5D (`heightmapModel.ts`) oraz analizator kolizji (`materialAnalyzer.ts`).
-- `src/curriculum/` – sprawdzacz zadań po wyniku symulacji (`grader.ts`), słowniczek 25 pojęć (`glossary.ts`), 10 lekcji Modułu 0 (`module0/lessonsM0.ts`), 18 lekcji Modułu 1 (`module1/lessonsM1.ts`) oraz 12 interaktywnych lekcji Modułów 2–4 (`modules2to4/lessonsM2toM4.ts`).
+- `src/core/simulation/` – model siatki wysokości 2.5D (`heightmapModel.ts`, w tym V-Bit stożkowy) oraz analizator kolizji (`materialAnalyzer.ts`).
+- `src/curriculum/` – sprawdzacz zadań po wyniku symulacji (`grader.ts`), słowniczek 25 pojęć (`glossary.ts`), 10 lekcji Modułu 0 (`module0/lessonsM0.ts`), 18 lekcji Modułu 1 (`module1/lessonsM1.ts`), 12 lekcji Modułów 2–4 (`modules2to4/lessonsM2toM4.ts`) oraz 12 lekcji Modułów 5–7 (`modules5to7/lessonsM5toM7.ts`).
 - `src/simulator3d/` – scena 3D Three.js (`SceneManager.ts`, `WorkpieceMesh.ts`, `ToolpathRenderer.ts`, `MachineActor.ts`, `SimulationPlayer.ts`).
 - `src/ui/` – komponenty interfejsu (`AppShell.ts`, `WelcomeGuideModal.ts`, `CodeEditor.ts`, `LessonPanel.ts`, `InteractiveWidgetsM0.ts`, `ModalStateBar.ts`, `ToolAndOffsetModal.ts`, `GlossaryModal.ts`).
 - `src/storage/` – zapis postępu z bezpiecznym fallbackiem do pamięci RAM (`progressStore.ts`).
-- `src/__tests__/` – 75 testów jednostkowych (`interpreter.test.ts`, `arcsAndComp.test.ts`, `materialAnalyzer.test.ts`, `grader.test.ts`).
+- `src/__tests__/` – 87 testów jednostkowych i integracyjnych (`interpreter.test.ts`, `arcsAndComp.test.ts`, `materialAnalyzer.test.ts`, `grader.test.ts`).
 
 ---
 
-## 3. Struktura kursu (40 lekcji w 5 modułach)
+## 3. Struktura kursu (52 lekcje w 8 modułach)
 
 1. **Moduł 0: Wstęp od zera przed maszyną (10 lekcji: `0.0` – `0.E`, bez pisania kodu G)**
    - **0.0**: Witaj w CNC – czym jest CNC, przykłady z życia, frezarka vs tokarka, droga od rysunku do gotowej części.
@@ -94,6 +99,22 @@ Tekst G-code (Fanuc/ISO, docelowo Siemens / Heidenhain / GRBL)
    - **Moduł 2 (`2.1` – `2.4`)**: Tokarka 2-osiowa (`X` jako średnica, `Z` jako oś wrzeciona, `T0101`/`T0202`, `G96`/`G97`/`G50`, profil wielostopniowy z łukiem `G2 R15`).
    - **Moduł 3 (`3.1` – `3.4`)**: Frezarka 4-osiowa z podzielnicą obrotową (oś `A` wokół osi `X`, indeksowanie `3+1` oraz płynna interpolacja śrubowa 4-osiowa).
    - **Moduł 4 (`4.1` – `4.4`)**: Frezarka 5-osiowa kołyskowa (osie `A` i `C`, pochylona płaszczyzna `3+2` `G68.2`/`CYCLE800`/`PLANE SPATIAL`, `TCPM/RTCP G43.4` oraz porównanie 4 dialektów przemysłowych).
+4. **Moduły 5–7: Nowe typy maszyn przemysłowych CNC (12 interaktywnych lekcji z zadaniami: `5.1` – `7.4`)**
+   - **Moduł 5 (`5.1` – `5.4`) — Wycinarka Laserowa / Plazmowa / Waterjet 2D CNC (`LASER_CUTTER`)**:
+     - `5.1`: Zapłon wiązki (`M3`/`M5`), przebijanie blachy stalowej na ruszcie grzebieniowym z postojem czasowym (`G04 P0.5`),
+     - `5.2`: Dojścia i wyjścia styczne (`Lead-in` / `Lead-out`) chroniące krawędzie gotowego detalu,
+     - `5.3`: Kompensacja szerokości szczeliny cięcia (`Kerf Width G41/G42`),
+     - `5.4`: Nesting i prawidłowa kolejność wycinania (najpierw otwory wewnętrzne, potem kontur zewnętrzny).
+   - **Moduł 6 (`6.1` – `6.4`) — Ploter Bramowy CNC / Router do drewna i kompozytów (`GANTRY_ROUTER`)**:
+     - `6.1`: Wysokoobrotowe elektrowrzeciono 24 000 RPM i dobór posuwów w drewnie/MDF,
+     - `6.2`: Grawerowanie stożkowe (`V-Carving`) frezem stożkowym V-Bit 60°/90°,
+     - `6.3`: Mostki trzymające detal (`Holding Tabs / Z-Bridges`) zapobiegające wyrwaniu wyciętej formatki,
+     - `6.4`: Rozkrój głęboki w płytach meblowych i kompozytach — frezowanie wielowarstwowe (`Step-down`).
+   - **Moduł 7 (`7.1` – `7.4`) — Centrum Tokarsko-Frezarskie Mill-Turn z oprawkami napędzanymi (`MILL_TURN`)**:
+     - `7.1`: Przełączenie wrzeciona w oś kątową `C` i oprawki napędzane (`Live Tooling`),
+     - `7.2`: Wiercenie otworów na czole wałka po okręgu podziałowym (`PCD`) z udziałem cyklu `G81` i indeksacji osi `C`,
+     - `7.3`: Frezowanie sześciokąta pod klucz przy użyciu osi poprzecznej `Y` i osi `C`,
+     - `7.4`: Frezowanie rowka śrubowego/krzywkowego na pobocznicy wałka (równoczesna interpolacja osi `Z` i `C`).
 
 ---
 

@@ -35,6 +35,11 @@ import {
   MODULE_4_LESSONS,
 } from '../curriculum/modules2to4/lessonsM2toM4';
 import { SYLLABUS_MODULES_2_TO_4 } from '../curriculum/modules2to4/syllabusM2toM4';
+import {
+  MODULE_5_LESSONS,
+  MODULE_6_LESSONS,
+  MODULE_7_LESSONS,
+} from '../curriculum/modules5to7/lessonsM5toM7';
 import { type CameraViewPreset, SceneManager } from '../simulator3d/SceneManager';
 import { SimulationPlayer } from '../simulator3d/SimulationPlayer';
 import { SafeProgressStore } from '../storage/progressStore';
@@ -51,6 +56,9 @@ const ALL_LESSONS: LessonDefinition[] = [
   ...MODULE_2_LESSONS,
   ...MODULE_3_LESSONS,
   ...MODULE_4_LESSONS,
+  ...MODULE_5_LESSONS,
+  ...MODULE_6_LESSONS,
+  ...MODULE_7_LESSONS,
 ];
 
 export class AppShell {
@@ -208,6 +216,11 @@ export class AppShell {
           <div class="viewport-wrapper">
             <div id="three-viewport" class="three-viewport"></div>
 
+            <div id="machine-type-badge" class="machine-type-badge" aria-label="Aktywny typ maszyny w symulatorze 3D">
+              <span class="machine-badge-dot">●</span>
+              <span id="machine-badge-text">🏭 Frezarka 3-osiowa (VMC)</span>
+            </div>
+
             <button type="button" id="btn-toggle-touch-3d" class="btn-touch-3d-toggle" title="Przełącz obracanie 3D palcem lub przewijanie strony">
               🖐 Dotknij, by obracać 3D
             </button>
@@ -290,7 +303,7 @@ export class AppShell {
               🕹 Ręczny ruch (JOG)
             </button>
             <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="tab-syllabus">
-              📚 Moduły 2–4
+              📚 Sylabus (Moduły 2–7)
             </button>
           </div>
 
@@ -382,16 +395,16 @@ export class AppShell {
             </footer>
           </div>
 
-          <!-- Karta 5: Spis lekcji Modułów 2-4 -->
+          <!-- Karta 5: Spis lekcji Modułów 2-7 -->
           <div id="tab-syllabus" class="tab-pane" role="tabpanel" hidden>
             <div class="nieloty-subpage-top-banner">
               <span class="nieloty-logo-badge">🦅 NIELOTY.PL</span>
               <span class="nieloty-slogan-inline">TYLKO I WYŁĄCZNIE DLA NIE UNOSZĄCYCH SIĘ DRAPIEŻNIKÓW.</span>
             </div>
             <div class="tables-panel-content">
-              <h3>Spis lekcji kolejnych modułów (Tokarka, 4 osie, 5 osi)</h3>
+              <h3>Spis lekcji zaawansowanych modułów (Tokarka, 4 osie, 5 osi, Laser, Router, Mill-Turn)</h3>
               <p class="table-hint">
-                Wszystkie lekcje z Modułów 2–4 są już dostępne jako interaktywne lekcje z zadaniami na liście wyboru u góry ekranu:
+                Wszystkie lekcje z Modułów 2–7 są już w pełni aktywne i dostępne jako interaktywne lekcje z zadaniami w oknie 3D na liście wyboru u góry ekranu:
               </p>
               ${syllabusHtml}
             </div>
@@ -587,6 +600,15 @@ export class AppShell {
       <optgroup label="Moduł 4: Frezarka 5-osiowa A+C i dialekty (4 lekcje: 4.1 – 4.4)">
         ${renderOptions(MODULE_4_LESSONS)}
       </optgroup>
+      <optgroup label="Moduł 5: Wycinarka Laserowa / Plazmowa 2D (4 lekcje: 5.1 – 5.4)">
+        ${renderOptions(MODULE_5_LESSONS)}
+      </optgroup>
+      <optgroup label="Moduł 6: Ploter bramowy CNC / Router 24k (4 lekcje: 6.1 – 6.4)">
+        ${renderOptions(MODULE_6_LESSONS)}
+      </optgroup>
+      <optgroup label="Moduł 7: Centrum Mill-Turn – osie C+Y (4 lekcje: 7.1 – 7.4)">
+        ${renderOptions(MODULE_7_LESSONS)}
+      </optgroup>
     `;
   }
 
@@ -626,7 +648,22 @@ export class AppShell {
       this.runSimulationFromEditor(true);
     }
 
+    this.updateMachineBadge();
     this.lessonPanel.setLesson(found);
+  }
+
+  private updateMachineBadge(): void {
+    const textEl = this.root.querySelector<HTMLElement>('#machine-badge-text');
+    if (!textEl) return;
+    const k = this.machineConfig.kinematics;
+    let label = '🏭 Frezarka 3-osiowa (VMC)';
+    if (k === 'LASER_CUTTER') label = '⚡ Wycinarka Laser / Plazma 2D';
+    else if (k === 'GANTRY_ROUTER') label = '🪵 Ploter Bramowy CNC (24 000 RPM)';
+    else if (k === 'MILL_TURN') label = '⚙️ Centrum Mill-Turn (C + Y)';
+    else if (k === 'LATHE_2AXIS') label = '🌀 Tokarka 2-osiowa (X / Z)';
+    else if (k === 'MILL_4AXIS') label = '🔄 Frezarka 4-osiowa (Oś A)';
+    else if (k === 'MILL_5AXIS') label = '🌐 Frezarka 5-osiowa (Kołyska A/C)';
+    textEl.textContent = label;
   }
 
   private navigateLesson(direction: 'prev' | 'next'): void {
@@ -888,7 +925,11 @@ export class AppShell {
       }
     }
 
-    this.sceneManager.setStockAndRebuildScene(this.stock, initialHeightmap);
+    this.sceneManager.setStockAndRebuildScene(
+      this.stock,
+      initialHeightmap,
+      this.machineConfig.kinematics
+    );
     this.sceneManager.updateToolpath(
       interpRes.segments,
       matRes.segmentAnnotations,
